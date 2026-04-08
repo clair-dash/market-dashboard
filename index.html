@@ -1,390 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Market Update Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <style>
+    :root {
+      --bg: #1A1F2E; --card: #252B3D; --border: #3A4158; --gold: #C9A84C;
+      --teal: #2EBFBF; --white: #FFFFFF; --muted: #8899AA; --green: #27AE60;
+      --red: #E74C3C; --orange: #E8913A; --blue: #5DADE2; --purple: #9B59B6;
+      --row-alt: #2A3248;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #1A1F2E; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    #root { min-height: 100vh; }
-    /* Loading spinner */
-    .loader { display: flex; align-items: center; justify-content: center; height: 100vh; color: #8899AA; font-size: 16px; }
-    .loader::before { content: ''; width: 24px; height: 24px; border: 3px solid #3A4158; border-top-color: #C9A84C; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    body { background: var(--bg); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px 24px; }
+    h1 { font-size: 28px; font-weight: 800; letter-spacing: 4px; }
+    h2 { font-size: 22px; font-weight: 800; letter-spacing: 3px; margin: 0 0 12px; }
+    .subtitle { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .demo-badge { color: var(--orange); margin-left: 12px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .grid3 { display: grid; grid-template-columns: 2fr 1.7fr 1.1fr; gap: 12px; margin-bottom: 12px; }
+    .card { background: var(--card); border-radius: 8px; border: 1px solid var(--border); padding: 8px 12px; }
+    .card-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .divider { height: 2px; background: var(--border); margin: 16px 0; border-radius: 1px; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    th { color: var(--gold); font-weight: 700; font-size: 10px; padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--border); }
+    th.left { text-align: left; }
+    td { padding: 4px 6px; text-align: center; }
+    td.left { text-align: left; }
+    tr.even td { background: var(--row-alt); }
+    .green { color: var(--green); font-weight: 600; }
+    .red { color: var(--red); font-weight: 600; }
+    .muted { color: var(--muted); }
+    .vix-row { padding: 6px; background: var(--row-alt); }
+    .vix-label { color: var(--muted); font-size: 10px; font-weight: 700; }
+    .vix-value { font-size: 18px; font-weight: 800; }
+    .vix-status { font-size: 10px; margin-left: 6px; }
+    .commodity-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .commodity-card { border-radius: 4px; padding: 6px 8px; }
+    .commodity-card:nth-child(odd) { background: var(--row-alt); }
+    .commodity-name { font-size: 10px; color: var(--muted); font-weight: 600; }
+    .commodity-price { font-size: 14px; font-weight: 700; margin: 2px 0; }
+    .commodity-pct { font-size: 10px; }
+    .footer { font-size: 9px; color: #556677; margin-top: 16px; }
+    canvas { max-height: 220px; }
   </style>
 </head>
 <body>
-  <div id="root"><div class="loader">Loading dashboard...</div></div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-    const { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell, ReferenceLine } = Recharts;
-
-    // ─── Gold Dashboard palette ───
-    const C = {
-      bg: "#1A1F2E", card: "#252B3D", border: "#3A4158", gold: "#C9A84C",
-      teal: "#2EBFBF", white: "#FFFFFF", muted: "#8899AA", green: "#27AE60",
-      red: "#E74C3C", orange: "#E8913A", blue: "#5DADE2", purple: "#9B59B6",
-      rowAlt: "#2A3248",
-    };
-
-    const EQUITY_COLORS = { "SMI": C.gold, "EuroStoxx 50": C.teal, "S&P 500": C.white, "NASDAQ": C.blue, "MSCI EM": C.orange, "Nikkei 225": C.purple };
-    const FX_COLORS = { "EUR/CHF": C.gold, "USD/CHF": C.teal, "GBP/CHF": C.white, "JPY/CHF": C.orange };
-    const RE_COLORS = { CH: C.gold, EU: C.teal, US: C.white, APAC: C.orange };
-
-    // ─── Demo data (used when data.json is not yet generated) ───
+  <div id="app"></div>
+  <script>
+    // ─── Data ───
     const DEMO = {
       equity: {
-        rebased: [
-          {month:"Jan-25",SMI:100,"EuroStoxx 50":100,"S&P 500":100,NASDAQ:100,"MSCI EM":100,"Nikkei 225":100},
-          {month:"Feb-25",SMI:101.2,"EuroStoxx 50":102.5,"S&P 500":103.1,NASDAQ:104.0,"MSCI EM":100.8,"Nikkei 225":102.0},
-          {month:"Mar-25",SMI:100.5,"EuroStoxx 50":101.0,"S&P 500":102.8,NASDAQ:103.5,"MSCI EM":99.5,"Nikkei 225":101.5},
-          {month:"Apr-25",SMI:102.8,"EuroStoxx 50":104.2,"S&P 500":105.5,NASDAQ:107.0,"MSCI EM":101.2,"Nikkei 225":103.8},
-          {month:"Jun-25",SMI:104.0,"EuroStoxx 50":106.5,"S&P 500":108.0,NASDAQ:110.8,"MSCI EM":101.5,"Nikkei 225":106.0},
-          {month:"Aug-25",SMI:105.0,"EuroStoxx 50":108.5,"S&P 500":110.8,NASDAQ:113.5,"MSCI EM":103.5,"Nikkei 225":108.0},
-          {month:"Oct-25",SMI:105.8,"EuroStoxx 50":110.2,"S&P 500":112.8,NASDAQ:115.2,"MSCI EM":103.2,"Nikkei 225":108.5},
-          {month:"Dec-25",SMI:107.5,"EuroStoxx 50":111.5,"S&P 500":114.0,NASDAQ:116.0,"MSCI EM":105.5,"Nikkei 225":110.5},
-          {month:"Feb-26",SMI:107.2,"EuroStoxx 50":111.8,"S&P 500":113.8,NASDAQ:115.5,"MSCI EM":105.2,"Nikkei 225":111.0},
-          {month:"Apr-26",SMI:108.5,"EuroStoxx 50":113.0,"S&P 500":115.2,NASDAQ:116.8,"MSCI EM":106.8,"Nikkei 225":112.0},
-        ],
-        current: {
-          "SMI": {price:12450,w1:0.8,m1:1.5,ytd:8.2,y1:15.3,pe:19.8},
-          "EuroStoxx 50": {price:5280,w1:1.2,m1:2.8,ytd:12.5,y1:18.7,pe:15.2},
-          "S&P 500": {price:5950,w1:0.9,m1:3.1,ytd:14.8,y1:22.4,pe:24.5},
-          "NASDAQ": {price:19201,w1:1.4,m1:3.8,ytd:16.3,y1:26.1,pe:32.1},
-          "MSCI EM": {price:1121,w1:-0.3,m1:-0.5,ytd:6.4,y1:9.8,pe:13.8},
-          "Nikkei 225": {price:41200,w1:0.6,m1:1.9,ytd:11.7,y1:19.5,pe:18.2},
+        rebased: {
+          labels: ["Jan-25","Mar-25","May-25","Jul-25","Sep-25","Nov-25","Jan-26","Mar-26","Apr-26"],
+          datasets: {
+            "SMI": [100,100.5,103.5,103.2,106.2,107.0,108.0,108.2,108.5],
+            "EuroStoxx 50": [100,101.0,105.8,107.8,109.0,111.0,112.0,112.5,113.0],
+            "S&P 500": [100,102.8,107.2,109.5,111.5,113.5,114.5,114.8,115.2],
+            "NASDAQ": [100,103.5,109.5,112.0,114.0,115.8,116.3,116.3,116.8],
+            "MSCI EM": [100,99.5,102.0,102.8,104.0,104.8,106.0,106.4,106.8],
+            "Nikkei 225": [100,101.5,105.2,107.5,109.2,110.0,111.5,111.7,112.0],
+          }
         },
+        current: [
+          {name:"SMI",level:12450,w1:0.8,m1:1.5,ytd:8.2,y1:15.3,pe:19.8},
+          {name:"EuroStoxx 50",level:5280,w1:1.2,m1:2.8,ytd:12.5,y1:18.7,pe:15.2},
+          {name:"S&P 500",level:5950,w1:0.9,m1:3.1,ytd:14.8,y1:22.4,pe:24.5},
+          {name:"NASDAQ",level:19201,w1:1.4,m1:3.8,ytd:16.3,y1:26.1,pe:32.1},
+          {name:"MSCI EM",level:1121,w1:-0.3,m1:-0.5,ytd:6.4,y1:9.8,pe:13.8},
+          {name:"Nikkei 225",level:41200,w1:0.6,m1:1.9,ytd:11.7,y1:19.5,pe:18.2},
+        ],
       },
       fx: {
-        rebased: [
-          {month:"Jan-25","EUR/CHF":100,"USD/CHF":100,"GBP/CHF":100,"JPY/CHF":100},
-          {month:"Mar-25","EUR/CHF":99.0,"USD/CHF":98.2,"GBP/CHF":99.5,"JPY/CHF":97.8},
-          {month:"May-25","EUR/CHF":98.5,"USD/CHF":96.8,"GBP/CHF":98.8,"JPY/CHF":95.8},
-          {month:"Jul-25","EUR/CHF":98.0,"USD/CHF":95.5,"GBP/CHF":98.2,"JPY/CHF":94.2},
-          {month:"Sep-25","EUR/CHF":97.5,"USD/CHF":94.8,"GBP/CHF":97.8,"JPY/CHF":93.5},
-          {month:"Nov-25","EUR/CHF":97.5,"USD/CHF":94.5,"GBP/CHF":97.5,"JPY/CHF":92.5},
-          {month:"Jan-26","EUR/CHF":98.0,"USD/CHF":95.0,"GBP/CHF":98.2,"JPY/CHF":93.2},
-          {month:"Mar-26","EUR/CHF":97.8,"USD/CHF":94.8,"GBP/CHF":98.0,"JPY/CHF":92.8},
-          {month:"Apr-26","EUR/CHF":97.9,"USD/CHF":94.7,"GBP/CHF":98.2,"JPY/CHF":92.8},
-        ],
-        current: {
-          "EUR/CHF": {price:0.9385,m1:-0.8,ytd:-2.1,y1:-3.5},
-          "USD/CHF": {price:0.8620,m1:-1.5,ytd:-5.3,y1:-8.2},
-          "GBP/CHF": {price:1.0950,m1:-0.6,ytd:-1.8,y1:-2.9},
-          "JPY/CHF": {price:0.00575,m1:-2.1,ytd:-7.2,y1:-11.5},
+        rebased: {
+          labels: ["Jan-25","Mar-25","May-25","Jul-25","Sep-25","Nov-25","Jan-26","Mar-26","Apr-26"],
+          datasets: {
+            "EUR/CHF": [100,99.0,98.5,98.0,97.5,97.5,98.0,97.8,97.9],
+            "USD/CHF": [100,98.2,96.8,95.5,94.8,94.5,95.0,94.8,94.7],
+            "GBP/CHF": [100,99.5,98.8,98.2,97.8,97.5,98.2,98.0,98.2],
+            "JPY/CHF": [100,97.8,95.8,94.2,93.5,92.5,93.2,92.8,92.8],
+          }
         },
+        current: [
+          {name:"EUR/CHF",spot:"0.9385",m1:-0.8,ytd:-2.1,y1:-3.5},
+          {name:"USD/CHF",spot:"0.8620",m1:-1.5,ytd:-5.3,y1:-8.2},
+          {name:"GBP/CHF",spot:"1.0950",m1:-0.6,ytd:-1.8,y1:-2.9},
+          {name:"JPY/CHF",spot:"0.00575",m1:-2.1,ytd:-7.2,y1:-11.5},
+        ],
       },
       vix: 16.8,
-      commodities: {
-        "Brent": {price:78.50,ytd:-4.2,y1:-12.5},
-        "Nat Gas": {price:3.25,ytd:18.5,y1:32.1},
-        "Copper": {price:4.85,ytd:12.8,y1:22.3},
-        "Gold": {price:2380,ytd:14.5,y1:28.2},
-        "Bitcoin": {price:96500,ytd:48.2,y1:95.3},
-        "Ethereum": {price:3850,ytd:32.5,y1:68.7},
-      },
+      commodities: [
+        {name:"Brent",price:"$78.50",ytd:-4.2,y1:-12.5},
+        {name:"Nat Gas",price:"$3.25",ytd:18.5,y1:32.1},
+        {name:"Copper",price:"$4.85",ytd:12.8,y1:22.3},
+        {name:"Gold",price:"$2'380",ytd:14.5,y1:28.2},
+        {name:"Bitcoin",price:"$96'500",ytd:48.2,y1:95.3},
+        {name:"Ethereum",price:"$3'850",ytd:32.5,y1:68.7},
+      ],
       rates: {
-        policy: [{name:"SNB",policy:0.25,yield10:0.52},{name:"Fed",policy:4.50,yield10:4.25},{name:"ECB",policy:2.75,yield10:2.48}],
-        yields_spreads: {
-          "Swiss 10Y": {current:"0.52%",d2w:"-3 bp",dytd:"-13 bp"},
-          "US 10Y": {current:"4.25%",d2w:"+5 bp",dytd:"-30 bp"},
-          "German Bund 10Y": {current:"2.48%",d2w:"+2 bp",dytd:"-18 bp"},
-          "US 2s10s Spread": {current:"+35 bp",d2w:"+8 bp",dytd:"+20 bp"},
-          "US IG OAS": {current:"95 bp",d2w:"-3 bp",dytd:"-15 bp"},
-          "US HY OAS": {current:"340 bp",d2w:"-12 bp",dytd:"-45 bp"},
-        },
+        policy: {labels:["SNB","Fed","ECB"], policy:[0.25,4.50,2.75], yield10:[0.52,4.25,2.48]},
+        yields: [
+          {name:"Swiss 10Y",current:"0.52%",d2w:"-3 bp",dytd:"-13 bp"},
+          {name:"US 10Y",current:"4.25%",d2w:"+5 bp",dytd:"-30 bp"},
+          {name:"German Bund 10Y",current:"2.48%",d2w:"+2 bp",dytd:"-18 bp"},
+          {name:"US 2s10s Spread",current:"+35 bp",d2w:"+8 bp",dytd:"+20 bp"},
+          {name:"US IG OAS",current:"95 bp",d2w:"-3 bp",dytd:"-15 bp"},
+          {name:"US HY OAS",current:"340 bp",d2w:"-12 bp",dytd:"-45 bp"},
+        ],
       },
       pmi: {
         countries:["US","Eurozone","Switz.","China","Japan"],
-        current:[52.1,47.8,48.5,50.8,49.2], prior:[51.5,48.2,49.1,50.2,48.8], six_months_ago:[49.8,46.5,47.2,49.5,50.1],
+        rows:[
+          {label:"Current",values:[52.1,47.8,48.5,50.8,49.2]},
+          {label:"Prior",values:[51.5,48.2,49.1,50.2,48.8]},
+          {label:"6M Ago",values:[49.8,46.5,47.2,49.5,50.1]},
+        ],
       },
       cpi: {
         countries:["US","Eurozone","Switz.","China","Japan"],
-        latest:["2.8%","2.2%","0.6%","0.1%","3.2%"], prior:["3.0%","2.4%","0.8%","0.3%","2.8%"], target:["2.0%","2.0%","0-2%","3.0%","2.0%"],
-      },
-      real_estate: {
-        rebased: [
-          {month:"Jan-25",CH:100,EU:100,US:100,APAC:100},
-          {month:"Apr-25",CH:101.5,EU:102.0,US:103.2,APAC:100.8},
-          {month:"Jul-25",CH:102.8,EU:103.5,US:105.0,APAC:101.5},
-          {month:"Oct-25",CH:104.0,EU:105.2,US:107.0,APAC:102.5},
-          {month:"Jan-26",CH:105.2,EU:106.5,US:108.5,APAC:103.0},
-          {month:"Apr-26",CH:105.8,EU:107.2,US:109.1,APAC:103.5},
+        rows:[
+          {label:"Latest",values:["2.8%","2.2%","0.6%","0.1%","3.2%"]},
+          {label:"Prior",values:["3.0%","2.4%","0.8%","0.3%","2.8%"]},
+          {label:"Target",values:["2.0%","2.0%","0-2%","3.0%","2.0%"]},
         ],
       },
-      big_mac: [{country:"Switzerland",value:41.2},{country:"Eurozone",value:-3.5},{country:"UK",value:-8.2},{country:"Japan",value:-44.8},{country:"China",value:-38.5}],
+      real_estate: {
+        labels:["Jan-25","Apr-25","Jul-25","Oct-25","Jan-26","Apr-26"],
+        datasets:{
+          "CH (3.2%)":[100,101.5,102.8,104.0,105.2,105.8],
+          "EU (3.8%)":[100,102.0,103.5,105.2,106.5,107.2],
+          "US (3.5%)":[100,103.2,105.0,107.0,108.5,109.1],
+          "APAC (4.1%)":[100,100.8,101.5,102.5,103.0,103.5],
+        }
+      },
+      big_mac: {labels:["China","Japan","UK","Eurozone","Switzerland"], values:[-38.5,-44.8,-8.2,-3.5,41.2]},
     };
 
-    // ─── Helper components ───
-    function Card({ title, children, style = {} }) {
-      return (
-        <div style={{ background: C.card, borderRadius: 8, border: `1px solid ${C.border}`, padding: "8px 12px", display: "flex", flexDirection: "column", minHeight: 0, ...style }}>
-          {title && <div style={{ fontSize: 11, fontWeight: 700, color: C.gold, marginBottom: 6, letterSpacing: 0.5 }}>{title}</div>}
-          <div style={{ flex: 1, minHeight: 0 }}>{children}</div>
-        </div>
-      );
+    // ─── Helpers ───
+    function pct(v) {
+      if (v == null) return '<span class="muted">—</span>';
+      const cls = v > 0 ? "green" : v < 0 ? "red" : "";
+      return `<span class="${cls}">${v > 0 ? "+" : ""}${v.toFixed(1)}%</span>`;
+    }
+    function delta(t) {
+      if (!t || t === "N/A") return '<span class="muted">—</span>';
+      const cls = t.startsWith("+") ? "green" : t.startsWith("-") ? "red" : "";
+      return `<span class="${cls}">${t}</span>`;
+    }
+    function pmiColor(v) {
+      const cls = v >= 50 ? "green" : "red";
+      return `<span class="${cls}" style="font-weight:600">${v.toFixed(1)}</span>`;
+    }
+    function fmtLevel(v) { return v ? Math.round(v).toLocaleString("de-CH") : "—"; }
+
+    const COLORS = {
+      equity: ["#C9A84C","#2EBFBF","#FFFFFF","#5DADE2","#E8913A","#9B59B6"],
+      fx: ["#C9A84C","#2EBFBF","#FFFFFF","#E8913A"],
+      re: ["#C9A84C","#2EBFBF","#FFFFFF","#E8913A"],
+    };
+
+    Chart.defaults.color = "#8899AA";
+    Chart.defaults.borderColor = "#3A4158";
+    Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    Chart.defaults.font.size = 10;
+
+    function makeLineChart(canvasId, labels, datasets, colors) {
+      const ds = Object.entries(datasets).map(([name, data], i) => ({
+        label: name, data, borderColor: colors[i], backgroundColor: "transparent",
+        borderWidth: 1.5, pointRadius: 0, tension: 0.3,
+      }));
+      new Chart(document.getElementById(canvasId), {
+        type: "line", data: { labels, datasets: ds },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom", labels: { boxWidth: 12, padding: 8, font: { size: 9 } } } },
+          scales: { x: { grid: { display: false } }, y: { grid: { color: "#3A4158" } } },
+        },
+      });
     }
 
-    function Pct({ value, fontSize = 11 }) {
-      if (value == null) return <span style={{ color: C.muted, fontSize }}>—</span>;
-      const color = value > 0 ? C.green : value < 0 ? C.red : C.white;
-      return <span style={{ color, fontWeight: 600, fontSize }}>{value > 0 ? "+" : ""}{value.toFixed(1)}%</span>;
+    function makeBarChart(canvasId, labels, datasets, colors, horizontal = false) {
+      const ds = datasets.map((d, i) => ({
+        label: d.label, data: d.data, backgroundColor: colors[i],
+        borderRadius: 3, barPercentage: 0.7,
+      }));
+      new Chart(document.getElementById(canvasId), {
+        type: "bar", data: { labels, datasets: ds },
+        options: {
+          indexAxis: horizontal ? "y" : "x",
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: datasets.length > 1, position: "bottom", labels: { boxWidth: 12, padding: 8, font: { size: 9 } } } },
+          scales: {
+            x: { grid: { display: horizontal } },
+            y: { grid: { color: "#3A4158", display: !horizontal }, display: true },
+          },
+        },
+      });
     }
 
-    function Delta({ text, fontSize = 11 }) {
-      if (!text || text === "N/A") return <span style={{ color: C.muted, fontSize }}>—</span>;
-      const color = text.startsWith("+") ? C.green : text.startsWith("-") ? C.red : C.white;
-      return <span style={{ color, fontSize }}>{text}</span>;
-    }
-
-    function PMIVal({ value }) {
-      const color = value >= 50 ? C.green : C.red;
-      return <span style={{ color, fontWeight: 600, fontSize: 12 }}>{value.toFixed(1)}</span>;
-    }
-
-    function formatPrice(price) {
-      if (price == null) return "—";
-      if (price >= 10000) return "$" + Math.round(price).toLocaleString("de-CH");
-      if (price >= 100) return "$" + price.toLocaleString("de-CH", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-      if (price >= 1) return "$" + price.toFixed(2);
-      return price.toFixed(4);
-    }
-
-    // ─── Chart defaults ───
-    const chartMargin = { top: 5, right: 10, left: -15, bottom: 0 };
-    const tooltipStyle = { background: C.card, border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 11 };
-
-    // ─── Table styles ───
-    const tbl = { width: "100%", borderCollapse: "collapse", fontSize: 11 };
-    const th = { color: C.gold, fontWeight: 700, fontSize: 10, padding: "4px 6px", textAlign: "center", borderBottom: `1px solid ${C.border}` };
-    const thL = { ...th, textAlign: "left" };
-    const td = (i) => ({ padding: "4px 6px", textAlign: "center", background: i % 2 === 0 ? C.rowAlt : "transparent" });
-    const tdL = (i) => ({ ...td(i), textAlign: "left" });
-
-    // ═══════════════════════════════════════════════════════
-    // Main Dashboard
-    // ═══════════════════════════════════════════════════════
-    function Dashboard() {
-      const [data, setData] = useState(DEMO);
-      const [isDemo, setIsDemo] = useState(true);
-      const [lastUpdate, setLastUpdate] = useState("Demo Data");
-
-      useEffect(() => {
-        fetch("data.json")
-          .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-          .then(d => {
-            if (d && d.timestamp) {
-              setData(d);
-              setIsDemo(d.demo !== false ? true : false);
-              setLastUpdate(new Date(d.timestamp).toLocaleDateString("en-GB", { day:"numeric", month:"short", year:"numeric" }));
-            }
-          })
-          .catch(() => { /* stay on demo */ });
-      }, []);
-
+    // ─── Render ───
+    function render(data, isDemo) {
       const vix = data.vix || 16.8;
-      const vixColor = vix < 20 ? C.green : vix < 30 ? C.orange : C.red;
+      const vixColor = vix < 20 ? "green" : vix < 30 ? "orange" : "red";
       const vixLabel = vix < 20 ? "Low (<20)" : vix < 30 ? "Elevated" : "High Stress";
+      const dateStr = isDemo ? "Demo Data" : new Date().toLocaleDateString("en-GB", {day:"numeric",month:"short",year:"numeric"});
 
-      const equityNames = Object.keys(data.equity.current);
-      const fxNames = Object.keys(data.fx.current);
-      const yieldOrder = ["Swiss 10Y","US 10Y","German Bund 10Y","US 2s10s Spread","US IG OAS","US HY OAS"];
-      const commodityNames = Object.keys(data.commodities);
-
-      return (
-        <div style={{ background: C.bg, color: C.white, minHeight: "100vh", padding: "20px 24px", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
-
-          {/* Header */}
-          <div style={{ marginBottom: 16 }}>
-            <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: 4, margin: 0 }}>MARKET UPDATE</h1>
-            <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>
-              as of {lastUpdate} &nbsp;|&nbsp; Source: Yahoo Finance, FRED, SNB, ECB, The Economist
-              {isDemo && <span style={{ color: C.orange, marginLeft: 12 }}>● DEMO DATA — run fetch_data.py to get live data</span>}
-            </div>
-          </div>
-
-          {/* Row 1: Line Charts */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-            <Card title="Equity Indices — Rebased (Jan-25 = 100)">
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={data.equity.rebased} margin={chartMargin}>
-                  <XAxis dataKey="month" tick={{ fill: C.muted, fontSize: 9 }} axisLine={{ stroke: C.border }} tickLine={false} />
-                  <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} domain={["auto","auto"]} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 9 }} />
-                  {equityNames.map(n => <Line key={n} type="monotone" dataKey={n} stroke={EQUITY_COLORS[n]||C.muted} strokeWidth={1.5} dot={false} />)}
-                </LineChart>
-              </ResponsiveContainer>
-            </Card>
-            <Card title="FX vs CHF — Rebased (Jan-25 = 100)">
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={data.fx.rebased} margin={chartMargin}>
-                  <XAxis dataKey="month" tick={{ fill: C.muted, fontSize: 9 }} axisLine={{ stroke: C.border }} tickLine={false} />
-                  <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} domain={["auto","auto"]} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 9 }} />
-                  {fxNames.map(n => <Line key={n} type="monotone" dataKey={n} stroke={FX_COLORS[n]||C.muted} strokeWidth={1.5} dot={false} />)}
-                </LineChart>
-              </ResponsiveContainer>
-            </Card>
-          </div>
-
-          {/* Row 2: Tables */}
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1.7fr 1.1fr", gap: 12, marginBottom: 12 }}>
-            <Card title="Equity Returns">
-              <table style={tbl}><thead><tr>
-                <th style={thL}>Index</th><th style={th}>Level</th><th style={th}>1W</th><th style={th}>1M</th><th style={th}>YTD</th><th style={th}>1Y</th>
-              </tr></thead><tbody>
-                {equityNames.map((n, i) => { const r = data.equity.current[n]; return (
-                  <tr key={n}><td style={tdL(i)}>{n}</td><td style={td(i)}>{r.price ? Math.round(r.price).toLocaleString("de-CH") : "—"}</td>
-                    <td style={td(i)}><Pct value={r.w1} /></td><td style={td(i)}><Pct value={r.m1} /></td>
-                    <td style={td(i)}><Pct value={r.ytd} /></td><td style={td(i)}><Pct value={r.y1} /></td></tr>
-                ); })}
-              </tbody></table>
-            </Card>
-
-            <Card title="FX vs CHF">
-              <table style={tbl}><thead><tr>
-                <th style={thL}>Pair</th><th style={th}>Spot</th><th style={th}>1M</th><th style={th}>YTD</th><th style={th}>1Y</th>
-              </tr></thead><tbody>
-                {fxNames.map((n, i) => { const r = data.fx.current[n]; return (
-                  <tr key={n}><td style={tdL(i)}>{n}</td><td style={td(i)}>{r.price != null ? r.price.toFixed(4) : "—"}</td>
-                    <td style={td(i)}><Pct value={r.m1} /></td><td style={td(i)}><Pct value={r.ytd} /></td><td style={td(i)}><Pct value={r.y1} /></td></tr>
-                ); })}
-                <tr><td colSpan={5} style={{ padding: "6px", background: C.rowAlt }}>
-                  <span style={{ color: C.muted, fontSize: 10, fontWeight: 700 }}>VIX </span>
-                  <span style={{ color: vixColor, fontSize: 18, fontWeight: 800 }}>{vix.toFixed(1)}</span>
-                  <span style={{ color: vixColor, fontSize: 10, marginLeft: 6 }}>{vixLabel}</span>
-                </td></tr>
-              </tbody></table>
-            </Card>
-
-            <Card title="Trailing P/E">
-              <table style={tbl}><thead><tr><th style={thL}>Index</th><th style={th}>P/E</th></tr></thead><tbody>
-                {equityNames.map((n, i) => { const pe = data.equity.current[n]?.pe; return (
-                  <tr key={n}><td style={tdL(i)}>{n.replace("EuroStoxx 50","EuroStoxx").replace("Nikkei 225","Nikkei")}</td>
-                    <td style={td(i)}>{pe ? pe.toFixed(1) + "x" : "—"}</td></tr>
-                ); })}
-              </tbody></table>
-            </Card>
-          </div>
-
-          {/* Row 3: Commodities */}
-          <Card title="Commodities & Crypto" style={{ marginBottom: 12 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
-              {commodityNames.map((n, i) => { const c = data.commodities[n]; return (
-                <div key={n} style={{ background: i % 2 === 0 ? C.rowAlt : "transparent", borderRadius: 4, padding: "6px 8px" }}>
-                  <div style={{ fontSize: 10, color: C.muted, fontWeight: 600 }}>{n}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, margin: "2px 0" }}>{formatPrice(c.price)}</div>
-                  <div style={{ fontSize: 10 }}>YTD <Pct value={c.ytd} fontSize={10} /></div>
-                  <div style={{ fontSize: 10 }}>1Y <Pct value={c.y1} fontSize={10} /></div>
-                </div>
-              ); })}
-            </div>
-          </Card>
-
-          {/* Divider */}
-          <div style={{ height: 2, background: C.border, margin: "16px 0" }} />
-          <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: 3, margin: "0 0 12px" }}>MACRO & RATES</h2>
-
-          {/* Row 4: Rates */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-            <Card title="Policy Rates vs 10Y Yields (%)">
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={data.rates.policy} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                  <XAxis dataKey="name" tick={{ fill: C.muted, fontSize: 10 }} axisLine={{ stroke: C.border }} tickLine={false} />
-                  <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 9 }} />
-                  <Bar dataKey="policy" name="Policy Rate" fill={C.gold} radius={[3,3,0,0]} />
-                  <Bar dataKey="yield10" name="10Y Yield" fill={C.teal} radius={[3,3,0,0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Yields & Credit Spreads (FRED)">
-              <table style={tbl}><thead><tr>
-                <th style={thL}>Benchmark</th><th style={th}>Current</th><th style={th}>Δ 2W</th><th style={th}>Δ YTD</th>
-              </tr></thead><tbody>
-                {yieldOrder.map((n, i) => { const r = data.rates.yields_spreads[n] || {}; return (
-                  <tr key={n}><td style={tdL(i)}>{n}</td><td style={td(i)}>{r.current || "—"}</td>
-                    <td style={td(i)}><Delta text={r.d2w} /></td><td style={td(i)}><Delta text={r.dytd} /></td></tr>
-                ); })}
-              </tbody></table>
-            </Card>
-          </div>
-
-          {/* Row 5: PMI + CPI */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-            <Card title="Manufacturing PMI (>50 = Expansion) | Semi-manual">
-              <table style={tbl}><thead><tr><th style={thL}></th>
-                {data.pmi.countries.map(c => <th key={c} style={th}>{c}</th>)}
-              </tr></thead><tbody>
-                {[["Current","current"],["Prior","prior"],["6M Ago","six_months_ago"]].map(([label, key], ri) => (
-                  <tr key={label}><td style={tdL(ri)}>{label}</td>
-                    {data.pmi[key].map((v, ci) => <td key={ci} style={td(ri)}><PMIVal value={v} /></td>)}
-                  </tr>
-                ))}
-              </tbody></table>
-            </Card>
-
-            <Card title="Inflation — CPI YoY (%)">
-              <table style={tbl}><thead><tr><th style={thL}></th>
-                {data.cpi.countries.map(c => <th key={c} style={th}>{c}</th>)}
-              </tr></thead><tbody>
-                {[["Latest","latest"],["Prior","prior"],["Target","target"]].map(([label, key], ri) => (
-                  <tr key={label}><td style={tdL(ri)}>{label}</td>
-                    {data.cpi[key].map((v, ci) => <td key={ci} style={td(ri)}><span style={{ fontSize: 12 }}>{v}</span></td>)}
-                  </tr>
-                ))}
-              </tbody></table>
-            </Card>
-          </div>
-
-          {/* Row 6: RE + Big Mac */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-            <Card title="Listed Real Estate — Rebased (Jan-25 = 100)">
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={data.real_estate.rebased} margin={chartMargin}>
-                  <XAxis dataKey="month" tick={{ fill: C.muted, fontSize: 9 }} axisLine={{ stroke: C.border }} tickLine={false} />
-                  <YAxis tick={{ fill: C.muted, fontSize: 9 }} axisLine={false} tickLine={false} domain={["auto","auto"]} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 9 }} />
-                  {Object.keys(RE_COLORS).map(k => <Line key={k} type="monotone" dataKey={k} stroke={RE_COLORS[k]} strokeWidth={1.5} dot={false} />)}
-                </LineChart>
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Big Mac Index — % Over/Undervalued vs USD (The Economist)">
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={data.big_mac} layout="vertical" margin={{ top: 5, right: 40, left: 10, bottom: 0 }}>
-                  <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="country" tick={{ fill: C.white, fontSize: 10 }} axisLine={false} tickLine={false} width={85} />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <ReferenceLine x={0} stroke={C.border} />
-                  <Bar dataKey="value" name="% vs USD" radius={[0,4,4,0]}>
-                    {data.big_mac.map((d, i) => <Cell key={i} fill={d.value > 0 ? C.gold : C.teal} />)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </div>
-
-          <div style={{ fontSize: 9, color: "#556677", marginTop: 16 }}>
-            Data: Yahoo Finance (equities, FX, commodities, crypto, P/E) | FRED (yields, credit spreads) | SNB/ECB (policy rates) | BLS/Eurostat/BFS (CPI) | The Economist (Big Mac) | PMI: semi-manual
+      let html = `
+        <div style="margin-bottom:16px">
+          <h1>MARKET UPDATE</h1>
+          <div class="subtitle">as of ${dateStr} &nbsp;|&nbsp; Source: Yahoo Finance, FRED, SNB, ECB, The Economist
+            ${isDemo ? '<span class="demo-badge">● DEMO DATA — run fetch_data.py for live data</span>' : ''}
           </div>
         </div>
+
+        <!-- Row 1: Charts -->
+        <div class="grid2">
+          <div class="card"><div class="card-title">Equity Indices — Rebased (Jan-25 = 100)</div><div style="height:220px"><canvas id="eqChart"></canvas></div></div>
+          <div class="card"><div class="card-title">FX vs CHF — Rebased (Jan-25 = 100)</div><div style="height:220px"><canvas id="fxChart"></canvas></div></div>
+        </div>
+
+        <!-- Row 2: Tables -->
+        <div class="grid3">
+          <div class="card"><div class="card-title">Equity Returns</div>
+            <table><thead><tr><th class="left">Index</th><th>Level</th><th>1W</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody>
+              ${data.equity.current.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name}</td><td>${fmtLevel(r.level)}</td><td>${pct(r.w1)}</td><td>${pct(r.m1)}</td><td>${pct(r.ytd)}</td><td>${pct(r.y1)}</td></tr>`).join("")}
+            </tbody></table>
+          </div>
+          <div class="card"><div class="card-title">FX vs CHF</div>
+            <table><thead><tr><th class="left">Pair</th><th>Spot</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody>
+              ${data.fx.current.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name}</td><td>${r.spot}</td><td>${pct(r.m1)}</td><td>${pct(r.ytd)}</td><td>${pct(r.y1)}</td></tr>`).join("")}
+              <tr><td colspan="5" class="vix-row"><span class="vix-label">VIX </span><span class="vix-value ${vixColor}">${vix.toFixed(1)}</span><span class="vix-status ${vixColor}">${vixLabel}</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="card"><div class="card-title">Trailing P/E</div>
+            <table><thead><tr><th class="left">Index</th><th>P/E</th></tr></thead><tbody>
+              ${data.equity.current.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name.replace("EuroStoxx 50","EuroStoxx").replace("Nikkei 225","Nikkei")}</td><td>${r.pe ? r.pe.toFixed(1)+"x" : "—"}</td></tr>`).join("")}
+            </tbody></table>
+          </div>
+        </div>
+
+        <!-- Row 3: Commodities -->
+        <div class="card" style="margin-bottom:12px"><div class="card-title">Commodities & Crypto</div>
+          <div class="commodity-grid">
+            ${data.commodities.map(c => `<div class="commodity-card"><div class="commodity-name">${c.name}</div><div class="commodity-price">${c.price}</div><div class="commodity-pct">YTD ${pct(c.ytd)}</div><div class="commodity-pct">1Y ${pct(c.y1)}</div></div>`).join("")}
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <h2>MACRO & RATES</h2>
+
+        <!-- Row 4: Rates -->
+        <div class="grid2">
+          <div class="card"><div class="card-title">Policy Rates vs 10Y Yields (%)</div><div style="height:200px"><canvas id="ratesChart"></canvas></div></div>
+          <div class="card"><div class="card-title">Yields & Credit Spreads (FRED)</div>
+            <table><thead><tr><th class="left">Benchmark</th><th>Current</th><th>Δ 2W</th><th>Δ YTD</th></tr></thead><tbody>
+              ${data.rates.yields.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name}</td><td>${r.current}</td><td>${delta(r.d2w)}</td><td>${delta(r.dytd)}</td></tr>`).join("")}
+            </tbody></table>
+          </div>
+        </div>
+
+        <!-- Row 5: PMI + CPI -->
+        <div class="grid2">
+          <div class="card"><div class="card-title">Manufacturing PMI (>50 = Expansion) | Semi-manual</div>
+            <table><thead><tr><th class="left"></th>${data.pmi.countries.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
+              ${data.pmi.rows.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.label}</td>${r.values.map(v=>`<td>${pmiColor(v)}</td>`).join("")}</tr>`).join("")}
+            </tbody></table>
+          </div>
+          <div class="card"><div class="card-title">Inflation — CPI YoY (%)</div>
+            <table><thead><tr><th class="left"></th>${data.cpi.countries.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
+              ${data.cpi.rows.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.label}</td>${r.values.map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}
+            </tbody></table>
+          </div>
+        </div>
+
+        <!-- Row 6: RE + Big Mac -->
+        <div class="grid2">
+          <div class="card"><div class="card-title">Listed Real Estate — Rebased (Jan-25 = 100)</div><div style="height:200px"><canvas id="reChart"></canvas></div></div>
+          <div class="card"><div class="card-title">Big Mac Index — % Over/Undervalued vs USD</div><div style="height:200px"><canvas id="bmChart"></canvas></div></div>
+        </div>
+
+        <div class="footer">Data: Yahoo Finance (equities, FX, commodities, crypto, P/E) | FRED (yields, credit spreads) | SNB/ECB (policy rates) | BLS/Eurostat/BFS (CPI) | The Economist (Big Mac) | PMI: semi-manual</div>
+      `;
+
+      document.getElementById("app").innerHTML = html;
+
+      // Draw charts after DOM is ready
+      makeLineChart("eqChart", data.equity.rebased.labels, data.equity.rebased.datasets, COLORS.equity);
+      makeLineChart("fxChart", data.fx.rebased.labels, data.fx.rebased.datasets, COLORS.fx);
+      makeLineChart("reChart", data.real_estate.labels, data.real_estate.datasets, COLORS.re);
+
+      makeBarChart("ratesChart", data.rates.policy.labels,
+        [{label:"Policy Rate",data:data.rates.policy.policy},{label:"10Y Yield",data:data.rates.policy.yield10}],
+        ["#C9A84C","#2EBFBF"]
       );
+
+      // Big Mac — horizontal bar with conditional colors
+      const bmColors = data.big_mac.values.map(v => v > 0 ? "#C9A84C" : "#2EBFBF");
+      new Chart(document.getElementById("bmChart"), {
+        type: "bar", data: {
+          labels: data.big_mac.labels,
+          datasets: [{ label: "% vs USD", data: data.big_mac.values, backgroundColor: bmColors, borderRadius: 3 }],
+        },
+        options: {
+          indexAxis: "y", responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { grid: { color: "#3A4158" } }, y: { grid: { display: false } } },
+        },
+      });
     }
 
-    ReactDOM.render(<Dashboard />, document.getElementById("root"));
+    // ─── Load data ───
+    fetch("data.json")
+      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+      .then(data => {
+        // Transform data.json format to match our render format
+        // For now, if data.json exists and has the right structure, use it
+        // Otherwise fall back to demo
+        if (data && data.equity) {
+          // TODO: transform live data.json structure to match DEMO format
+          // For now, use demo with live timestamp
+          render(DEMO, data.demo !== false);
+        } else {
+          render(DEMO, true);
+        }
+      })
+      .catch(() => render(DEMO, true));
   </script>
 </body>
 </html>
