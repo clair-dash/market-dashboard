@@ -1,0 +1,653 @@
+{
+  "timestamp": "2026-04-08T08:13:14.723553",
+  "demo": false,
+  "equity": {
+    "rebased": [
+      {
+        "month": "Jan-25",
+        "SMI": 100.0,
+        "EuroStoxx 50": 100.0,
+        "S&P 500": 100.0,
+        "NASDAQ": 100.0,
+        "MSCI EM": 100.0,
+        "Nikkei 225": 100.0
+      },
+      {
+        "month": "Feb-25",
+        "SMI": 103.23,
+        "EuroStoxx 50": 103.34,
+        "S&P 500": 98.58,
+        "NASDAQ": 96.03,
+        "MSCI EM": 101.15,
+        "Nikkei 225": 93.89
+      },
+      {
+        "month": "Mar-25",
+        "SMI": 100.01,
+        "EuroStoxx 50": 99.27,
+        "S&P 500": 92.9,
+        "NASDAQ": 88.14,
+        "MSCI EM": 102.29,
+        "Nikkei 225": 90.01
+      },
+      {
+        "month": "Apr-25",
+        "SMI": 96.19,
+        "EuroStoxx 50": 97.6,
+        "S&P 500": 92.19,
+        "NASDAQ": 88.89,
+        "MSCI EM": 102.43,
+        "Nikkei 225": 91.09
+      },
+      {
+        "month": "May-25",
+        "SMI": 97.06,
+        "EuroStoxx 50": 101.51,
+        "S&P 500": 97.87,
+        "NASDAQ": 97.38,
+        "MSCI EM": 106.55,
+        "Nikkei 225": 95.94
+      },
+      {
+        "month": "Jun-25",
+        "SMI": 94.64,
+        "EuroStoxx 50": 100.31,
+        "S&P 500": 102.72,
+        "NASDAQ": 103.78,
+        "MSCI EM": 112.92,
+        "Nikkei 225": 102.31
+      },
+      {
+        "month": "Jul-25",
+        "SMI": 93.96,
+        "EuroStoxx 50": 100.63,
+        "S&P 500": 104.95,
+        "NASDAQ": 107.62,
+        "MSCI EM": 114.77,
+        "Nikkei 225": 103.78
+      },
+      {
+        "month": "Aug-25",
+        "SMI": 96.75,
+        "EuroStoxx 50": 101.23,
+        "S&P 500": 106.95,
+        "NASDAQ": 109.31,
+        "MSCI EM": 117.84,
+        "Nikkei 225": 107.95
+      },
+      {
+        "month": "Sep-25",
+        "SMI": 96.13,
+        "EuroStoxx 50": 104.6,
+        "S&P 500": 110.73,
+        "NASDAQ": 115.45,
+        "MSCI EM": 126.21,
+        "Nikkei 225": 113.55
+      },
+      {
+        "month": "Oct-25",
+        "SMI": 97.12,
+        "EuroStoxx 50": 107.1,
+        "S&P 500": 113.24,
+        "NASDAQ": 120.88,
+        "MSCI EM": 130.7,
+        "Nikkei 225": 132.44
+      },
+      {
+        "month": "Nov-25",
+        "SMI": 101.88,
+        "EuroStoxx 50": 107.21,
+        "S&P 500": 113.39,
+        "NASDAQ": 119.05,
+        "MSCI EM": 128.39,
+        "Nikkei 225": 126.99
+      },
+      {
+        "month": "Dec-25",
+        "SMI": 105.32,
+        "EuroStoxx 50": 109.54,
+        "S&P 500": 113.33,
+        "NASDAQ": 118.42,
+        "MSCI EM": 129.31,
+        "Nikkei 225": 127.21
+      },
+      {
+        "month": "Jan-26",
+        "SMI": 104.69,
+        "EuroStoxx 50": 112.5,
+        "S&P 500": 114.87,
+        "NASDAQ": 119.54,
+        "MSCI EM": 141.68,
+        "Nikkei 225": 134.75
+      },
+      {
+        "month": "Feb-26",
+        "SMI": 111.25,
+        "EuroStoxx 50": 116.11,
+        "S&P 500": 113.88,
+        "NASDAQ": 115.49,
+        "MSCI EM": 150.02,
+        "Nikkei 225": 148.72
+      },
+      {
+        "month": "Mar-26",
+        "SMI": 101.43,
+        "EuroStoxx 50": 105.35,
+        "S&P 500": 108.08,
+        "NASDAQ": 110.0,
+        "MSCI EM": 136.14,
+        "Nikkei 225": 129.04
+      },
+      {
+        "month": "Apr-26",
+        "SMI": 104.77,
+        "EuroStoxx 50": 111.24,
+        "S&P 500": 109.54,
+        "NASDAQ": 112.18,
+        "MSCI EM": 137.39,
+        "Nikkei 225": 142.29
+      }
+    ],
+    "current": {
+      "SMI": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "EuroStoxx 50": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "S&P 500": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "NASDAQ": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "MSCI EM": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "Nikkei 225": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      }
+    }
+  },
+  "fx": {
+    "rebased": [
+      {
+        "month": "Jan-25",
+        "EUR/CHF": 100.0,
+        "USD/CHF": 100.0,
+        "GBP/CHF": 100.0,
+        "JPY/CHF": 100.0
+      },
+      {
+        "month": "Feb-25",
+        "EUR/CHF": 98.92,
+        "USD/CHF": 98.96,
+        "GBP/CHF": 100.34,
+        "JPY/CHF": 101.69
+      },
+      {
+        "month": "Mar-25",
+        "EUR/CHF": 100.82,
+        "USD/CHF": 96.87,
+        "GBP/CHF": 100.86,
+        "JPY/CHF": 100.0
+      },
+      {
+        "month": "Apr-25",
+        "EUR/CHF": 99.18,
+        "USD/CHF": 90.54,
+        "GBP/CHF": 97.73,
+        "JPY/CHF": 98.31
+      },
+      {
+        "month": "May-25",
+        "EUR/CHF": 98.73,
+        "USD/CHF": 90.41,
+        "GBP/CHF": 97.89,
+        "JPY/CHF": 96.61
+      },
+      {
+        "month": "Jun-25",
+        "EUR/CHF": 99.0,
+        "USD/CHF": 87.78,
+        "GBP/CHF": 96.92,
+        "JPY/CHF": 93.22
+      },
+      {
+        "month": "Jul-25",
+        "EUR/CHF": 98.29,
+        "USD/CHF": 89.42,
+        "GBP/CHF": 95.41,
+        "JPY/CHF": 91.53
+      },
+      {
+        "month": "Aug-25",
+        "EUR/CHF": 98.92,
+        "USD/CHF": 89.47,
+        "GBP/CHF": 95.67,
+        "JPY/CHF": 91.53
+      },
+      {
+        "month": "Sep-25",
+        "EUR/CHF": 98.92,
+        "USD/CHF": 87.66,
+        "GBP/CHF": 94.81,
+        "JPY/CHF": 91.53
+      },
+      {
+        "month": "Oct-25",
+        "EUR/CHF": 98.1,
+        "USD/CHF": 88.15,
+        "GBP/CHF": 93.34,
+        "JPY/CHF": 88.14
+      },
+      {
+        "month": "Nov-25",
+        "EUR/CHF": 98.6,
+        "USD/CHF": 88.26,
+        "GBP/CHF": 94.11,
+        "JPY/CHF": 86.44
+      },
+      {
+        "month": "Dec-25",
+        "EUR/CHF": 98.36,
+        "USD/CHF": 87.06,
+        "GBP/CHF": 94.36,
+        "JPY/CHF": 86.44
+      },
+      {
+        "month": "Jan-26",
+        "EUR/CHF": 96.95,
+        "USD/CHF": 84.94,
+        "GBP/CHF": 93.59,
+        "JPY/CHF": 84.75
+      },
+      {
+        "month": "Feb-26",
+        "EUR/CHF": 96.51,
+        "USD/CHF": 85.02,
+        "GBP/CHF": 92.32,
+        "JPY/CHF": 84.75
+      },
+      {
+        "month": "Mar-26",
+        "EUR/CHF": 96.91,
+        "USD/CHF": 87.96,
+        "GBP/CHF": 93.24,
+        "JPY/CHF": 84.75
+      },
+      {
+        "month": "Apr-26",
+        "EUR/CHF": 97.39,
+        "USD/CHF": 86.65,
+        "GBP/CHF": 93.57,
+        "JPY/CHF": 84.75
+      }
+    ],
+    "current": {
+      "EUR/CHF": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "USD/CHF": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "GBP/CHF": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      },
+      "JPY/CHF": {
+        "price": null,
+        "w1": null,
+        "m1": null,
+        "ytd": null,
+        "y1": null,
+        "pe": null
+      }
+    }
+  },
+  "commodities": {
+    "Brent": {
+      "price": null,
+      "w1": null,
+      "m1": null,
+      "ytd": null,
+      "y1": null,
+      "pe": null
+    },
+    "Nat Gas": {
+      "price": null,
+      "w1": null,
+      "m1": null,
+      "ytd": null,
+      "y1": null,
+      "pe": null
+    },
+    "Copper": {
+      "price": null,
+      "w1": null,
+      "m1": null,
+      "ytd": null,
+      "y1": null,
+      "pe": null
+    },
+    "Gold": {
+      "price": null,
+      "w1": null,
+      "m1": null,
+      "ytd": null,
+      "y1": null,
+      "pe": null
+    },
+    "Bitcoin": {
+      "price": null,
+      "w1": null,
+      "m1": null,
+      "ytd": null,
+      "y1": null,
+      "pe": null
+    },
+    "Ethereum": {
+      "price": null,
+      "w1": null,
+      "m1": null,
+      "ytd": null,
+      "y1": null,
+      "pe": null
+    }
+  },
+  "vix": null,
+  "rates": {
+    "policy": [
+      {
+        "name": "SNB",
+        "policy": 0.25,
+        "yield10": 0.52
+      },
+      {
+        "name": "Fed",
+        "policy": 3.75,
+        "yield10": 4.34
+      },
+      {
+        "name": "ECB",
+        "policy": 2.75,
+        "yield10": 2.81
+      }
+    ],
+    "yields_spreads": {
+      "US 10Y": {
+        "current": "4.34%",
+        "d2w": "-10 bp",
+        "dytd": "N/A"
+      },
+      "German Bund 10Y": {
+        "current": "2.81%",
+        "d2w": "+0 bp",
+        "dytd": "-1 bp"
+      },
+      "US 2s10s Spread": {
+        "current": "1 bp",
+        "d2w": "-0 bp",
+        "dytd": "N/A"
+      },
+      "US IG OAS": {
+        "current": "1 bp",
+        "d2w": "-0 bp",
+        "dytd": "N/A"
+      },
+      "US HY OAS": {
+        "current": "3 bp",
+        "d2w": "-0 bp",
+        "dytd": "N/A"
+      },
+      "Swiss 10Y": {
+        "current": "0.52%",
+        "d2w": "N/A",
+        "dytd": "N/A"
+      }
+    }
+  },
+  "pmi": {
+    "countries": [
+      "US",
+      "Eurozone",
+      "Switz.",
+      "China",
+      "Japan"
+    ],
+    "current": [
+      52.1,
+      47.8,
+      48.5,
+      50.8,
+      49.2
+    ],
+    "prior": [
+      51.5,
+      48.2,
+      49.1,
+      50.2,
+      48.8
+    ],
+    "six_months_ago": [
+      49.8,
+      46.5,
+      47.2,
+      49.5,
+      50.1
+    ],
+    "last_updated": "2026-04-01"
+  },
+  "cpi": {
+    "countries": [
+      "US",
+      "Eurozone",
+      "Switz.",
+      "China",
+      "Japan"
+    ],
+    "latest": [
+      "2.7%",
+      "2.2%",
+      "0.6%",
+      "0.1%",
+      "3.2%"
+    ],
+    "prior": [
+      "2.8%",
+      "2.4%",
+      "0.8%",
+      "0.3%",
+      "2.8%"
+    ],
+    "target": [
+      "2.0%",
+      "2.0%",
+      "0-2%",
+      "3.0%",
+      "2.0%"
+    ]
+  },
+  "real_estate": {
+    "rebased": [
+      {
+        "month": "Jan-25",
+        "CH": 100.0,
+        "EU": 100.0,
+        "US": 100.0,
+        "APAC": 100.0
+      },
+      {
+        "month": "Feb-25",
+        "CH": 103.92,
+        "EU": 99.36,
+        "US": 103.7,
+        "APAC": 99.25
+      },
+      {
+        "month": "Mar-25",
+        "CH": 102.61,
+        "EU": 95.87,
+        "US": 99.99,
+        "APAC": 95.27
+      },
+      {
+        "month": "Apr-25",
+        "CH": 100.75,
+        "EU": 104.33,
+        "US": 98.55,
+        "APAC": 89.05
+      },
+      {
+        "month": "May-25",
+        "CH": 104.51,
+        "EU": 108.15,
+        "US": 99.65,
+        "APAC": 91.88
+      },
+      {
+        "month": "Jun-25",
+        "CH": 104.31,
+        "EU": 108.28,
+        "US": 99.36,
+        "APAC": 91.7
+      },
+      {
+        "month": "Jul-25",
+        "CH": 104.49,
+        "EU": 106.05,
+        "US": 100.43,
+        "APAC": 95.13
+      },
+      {
+        "month": "Aug-25",
+        "CH": 107.61,
+        "EU": 106.7,
+        "US": 103.92,
+        "APAC": 95.98
+      },
+      {
+        "month": "Sep-25",
+        "CH": 104.59,
+        "EU": 105.81,
+        "US": 103.0,
+        "APAC": 98.09
+      },
+      {
+        "month": "Oct-25",
+        "CH": 109.98,
+        "EU": 107.04,
+        "US": 101.44,
+        "APAC": 99.92
+      },
+      {
+        "month": "Nov-25",
+        "CH": 110.76,
+        "EU": 107.62,
+        "US": 103.89,
+        "APAC": 103.7
+      },
+      {
+        "month": "Dec-25",
+        "CH": 111.65,
+        "EU": 105.95,
+        "US": 100.65,
+        "APAC": 102.68
+      },
+      {
+        "month": "Jan-26",
+        "CH": 113.26,
+        "EU": 108.02,
+        "US": 104.22,
+        "APAC": 102.71
+      },
+      {
+        "month": "Feb-26",
+        "CH": 113.28,
+        "EU": 120.7,
+        "US": 109.83,
+        "APAC": 111.39
+      },
+      {
+        "month": "Mar-26",
+        "CH": 107.4,
+        "EU": 104.2,
+        "US": 101.81,
+        "APAC": 108.06
+      },
+      {
+        "month": "Apr-26",
+        "CH": 110.57,
+        "EU": 110.43,
+        "US": 104.98,
+        "APAC": 111.62
+      }
+    ]
+  },
+  "big_mac": [
+    {
+      "country": "Switzerland",
+      "value": 48.4
+    },
+    {
+      "country": "Eurozone",
+      "value": 15.3
+    },
+    {
+      "country": "UK",
+      "value": 15.7
+    },
+    {
+      "country": "Japan",
+      "value": -50.5
+    },
+    {
+      "country": "China",
+      "value": -40.2
+    }
+  ]
+}
