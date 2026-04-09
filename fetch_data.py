@@ -458,7 +458,7 @@ def fetch_swiss_10y():
 def build_data():
     """Main function: fetch all data and build the JSON structure."""
     log.info("Starting data fetch...")
-    timestamp = datetime.now().isoformat()
+    timestamp = datetime.utcnow().isoformat() + "Z"
 
     # 1. Equity rebased
     log.info("Fetching equity history...")
@@ -468,6 +468,26 @@ def build_data():
     # 2. Equity current
     log.info("Fetching equity current data...")
     equity_current = fetch_current_data(EQUITY_TICKERS)
+
+    # 2b. Fetch P/E from ETF proxies (indices don't have P/E)
+    log.info("Fetching P/E from ETF proxies...")
+    for name, etf_ticker in EQUITY_ETF_TICKERS.items():
+        if name in equity_current and equity_current[name].get("pe") is None:
+            try:
+                tk = yf.Ticker(etf_ticker)
+                info = tk.info or {}
+                import math
+                # Try trailingPE, then forward PE
+                for pe_key in ["trailingPE", "forwardPE"]:
+                    pe = info.get(pe_key)
+                    if pe is not None:
+                        pe = float(pe)
+                        if not math.isnan(pe) and not math.isinf(pe) and pe > 0:
+                            equity_current[name]["pe"] = round(pe, 1)
+                            log.info(f"  P/E for {name} via {etf_ticker}: {equity_current[name]['pe']}")
+                            break
+            except Exception as e:
+                log.warning(f"  P/E fetch failed for {name} via {etf_ticker}: {e}")
 
     # 3. FX
     log.info("Fetching FX history...")
@@ -480,6 +500,52 @@ def build_data():
     # 4. Commodities
     log.info("Fetching commodities & crypto...")
     commodity_current = fetch_current_data(COMMODITY_TICKERS)
+
+    # 4b. Compute Gold CHF returns (Gold USD return + USD/CHF return)
+    log.info("Computing Gold CHF returns...")
+    gold_chf_returns = {"w1": None, "m1": None, "ytd": None, "y1": None}
+    try:
+        import math
+        # Download gold and USDCHF history
+        gold_hist = safe_download("GC=F", period="13mo", interval="1d")
+        usdchf_hist = safe_download("USDCHF=X", period="13mo", interval="1d")
+        if not gold_hist.empty and not usdchf_hist.empty:
+            gc = gold_hist["Close"].dropna()
+            uc = usdchf_hist["Close"].dropna()
+            # Align on common dates
+            common = gc.index.intersection(uc.index)
+            if len(common) > 5:
+                gc = gc.loc[common]
+                uc = uc.loc[common]
+                # Gold in CHF = Gold USD * USDCHF
+                gold_chf = gc * uc
+                current_chf = float(gold_chf.iloc[-1])
+
+                def chf_ret(n):
+                    idx = len(gold_chf) - 1 - n
+                    if idx < 0:
+                        idx = 0
+                    past = float(gold_chf.iloc[idx])
+                    if past == 0 or math.isnan(past):
+                        return None
+                    val = (current_chf - past) / past * 100
+                    return round(val, 2) if not math.isnan(val) else None
+
+                gold_chf_returns["w1"] = chf_ret(5)
+                gold_chf_returns["m1"] = chf_ret(21)
+                gold_chf_returns["y1"] = chf_ret(252) if len(gold_chf) > 252 else chf_ret(len(gold_chf) - 1)
+
+                # YTD
+                year_start = pd.Timestamp(datetime(datetime.now().year, 1, 1))
+                if gold_chf.index.tz is not None:
+                    year_start = year_start.tz_localize(gold_chf.index.tz)
+                ytd_data = gold_chf[gold_chf.index >= year_start]
+                if len(ytd_data) > 0:
+                    ytd_start = float(ytd_data.iloc[0])
+                    if ytd_start != 0 and not math.isnan(ytd_start):
+                        gold_chf_returns["ytd"] = round((current_chf - ytd_start) / ytd_start * 100, 2)
+    except Exception as e:
+        log.warning(f"Gold CHF returns failed: {e}")
 
     # 5. VIX
     log.info("Fetching VIX...")
@@ -589,6 +655,7 @@ def build_data():
             "current": fx_current,
         },
         "commodities": commodity_current,
+        "gold_chf_returns": gold_chf_returns,
         "vix": vix,
         "dxy": dxy_data,
         "gold_miners": miners_data,
