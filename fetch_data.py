@@ -585,9 +585,24 @@ def build_data():
     return data
 
 
+def sanitize(obj):
+    """Recursively replace NaN/Infinity with None for valid JSON."""
+    import math
+    if isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return obj
+    if isinstance(obj, dict):
+        return {k: sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [sanitize(v) for v in obj]
+    return obj
+
+
 def main():
     try:
         data = build_data()
+        data = sanitize(data)
         with open(OUTPUT_PATH, "w") as f:
             json.dump(data, f, indent=2, default=str)
         log.info(f"Data written to {OUTPUT_PATH}")
