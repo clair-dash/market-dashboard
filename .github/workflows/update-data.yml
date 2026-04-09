@@ -2,7 +2,11 @@ name: Update Dashboard Data
 
 on:
   schedule:
-    - cron: '0 7 * * 1-5'
+    # Every 5 minutes, Mon-Fri, 6:00-22:00 UTC
+    # Covers: Asia close, Europe open/close, US open/close
+    - cron: '*/5 6-22 * * 1-5'
+    # Once at 7am UTC on weekends (for crypto/fx weekend moves)
+    - cron: '0 7 * * 0,6'
   workflow_dispatch:
 
 permissions:
@@ -10,9 +14,14 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "data-update"
+  cancel-in-progress: true
+
 jobs:
   fetch-data:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,6 +30,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install yfinance requests pandas
@@ -35,12 +45,15 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add data.json
-          git diff --staged --quiet || git commit -m "Update market data $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "Update market data $(date -u +%Y-%m-%dT%H:%M)"
           git push
 
+  # Deploy only once per hour to avoid excessive Pages builds
   deploy:
     needs: fetch-data
     runs-on: ubuntu-latest
+    # Only deploy on the hour (minute 0) or manual trigger
+    if: github.event_name == 'workflow_dispatch' || endsWith(github.event.schedule, '0 6-22 * * 1-5') || endsWith(github.event.schedule, '0 7 * * 0,6')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
