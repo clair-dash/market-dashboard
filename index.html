@@ -4,328 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Market Update Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <style>
-    :root {
-      --bg: #1A1F2E; --card: #252B3D; --border: #3A4158; --gold: #C9A84C;
-      --teal: #2EBFBF; --white: #FFFFFF; --muted: #8899AA; --green: #27AE60;
-      --red: #E74C3C; --orange: #E8913A; --blue: #5DADE2; --purple: #9B59B6;
-      --row-alt: #2A3248;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--bg); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px 24px; }
-    h1 { font-size: 28px; font-weight: 800; letter-spacing: 4px; }
-    h2 { font-size: 22px; font-weight: 800; letter-spacing: 3px; margin: 0 0 12px; }
-    .subtitle { font-size: 11px; color: var(--muted); margin-top: 4px; }
-    .demo-badge { color: var(--orange); margin-left: 12px; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .grid3 { display: grid; grid-template-columns: 2fr 1.7fr 1.1fr; gap: 12px; margin-bottom: 12px; }
-    .card { background: var(--card); border-radius: 8px; border: 1px solid var(--border); padding: 8px 12px; }
-    .card-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; letter-spacing: 0.5px; }
-    .divider { height: 2px; background: var(--border); margin: 16px 0; border-radius: 1px; }
-    table { width: 100%; border-collapse: collapse; font-size: 11px; }
-    th { color: var(--gold); font-weight: 700; font-size: 10px; padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--border); }
-    th.left { text-align: left; }
-    td { padding: 4px 6px; text-align: center; }
-    td.left { text-align: left; }
-    tr.even td { background: var(--row-alt); }
-    .green { color: var(--green); font-weight: 600; }
-    .red { color: var(--red); font-weight: 600; }
-    .muted { color: var(--muted); }
-    .vix-row { padding: 6px; background: var(--row-alt); }
-    .vix-label { color: var(--muted); font-size: 10px; font-weight: 700; }
-    .vix-value { font-size: 18px; font-weight: 800; }
-    .vix-status { font-size: 10px; margin-left: 6px; }
-    .commodity-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
-    .commodity-card { border-radius: 4px; padding: 6px 8px; }
-    .commodity-card:nth-child(odd) { background: var(--row-alt); }
-    .commodity-name { font-size: 10px; color: var(--muted); font-weight: 600; }
-    .commodity-price { font-size: 14px; font-weight: 700; margin: 2px 0; }
-    .commodity-pct { font-size: 10px; }
-    .footer { font-size: 9px; color: #556677; margin-top: 16px; }
-    canvas { max-height: 220px; }
+    :root{--bg:#0F1117;--bg2:#161923;--card:#1C2030;--border:#2A3048;--gold:#C9A84C;--teal:#2EBFBF;--white:#E8EAF0;--muted:#6B7394;--green:#34D399;--green-dim:rgba(52,211,153,.12);--red:#F87171;--red-dim:rgba(248,113,113,.12);--orange:#FBBF24;--blue:#60A5FA;--purple:#A78BFA;--text-dim:#545B78;--row-alt:rgba(255,255,255,.02)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--white);font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+    .dash{max-width:1400px;margin:0 auto;padding:20px 24px 40px}
+    .header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+    .header h1{font-size:24px;font-weight:800;letter-spacing:5px}
+    .header-ts{font-size:11px;color:var(--muted)}
+    .subtitle{font-size:11px;color:var(--text-dim);margin-bottom:20px}
+    .section-title{font-size:18px;font-weight:800;letter-spacing:3px;margin:24px 0 12px}
+    .section-divider{height:1px;background:linear-gradient(90deg,var(--gold)0%,transparent 100%);margin:28px 0 4px;opacity:.4}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+    .g3{display:grid;grid-template-columns:2fr 1.5fr 1fr;gap:10px;margin-bottom:10px}
+    .g3eq{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+    .g6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;overflow:hidden}
+    .card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px;flex-wrap:wrap;gap:4px}
+    .card-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.4px}
+    .card-ts{font-size:10px;color:var(--text-dim)}
+    .card-source{font-size:9px;color:var(--text-dim);margin-top:6px;font-style:italic}
+    canvas{max-height:220px}
+    table{width:100%;border-collapse:collapse;font-size:11px}
+    th{color:var(--gold);font-weight:700;font-size:10px;padding:4px 5px;text-align:center;border-bottom:1px solid var(--border);letter-spacing:.3px;white-space:nowrap}
+    th.l{text-align:left}
+    td{padding:4px 5px;text-align:center;font-size:11px}
+    td.l{text-align:left;font-weight:500}
+    tr:nth-child(even) td{background:var(--row-alt)}
+    .g{color:var(--green);font-weight:600}.r{color:var(--red);font-weight:600}.d{color:var(--text-dim)}
+    .cc{border-radius:8px;padding:8px 10px;background:var(--card);border:1px solid var(--border)}
+    .cc-name{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+    .cc-price{font-size:16px;font-weight:700;margin:3px 0;font-family:'JetBrains Mono',monospace}
+    .cc-pct{font-size:10px}
+    .gold-hero{background:linear-gradient(135deg,rgba(201,168,76,.08)0%,transparent 60%);border:1px solid rgba(201,168,76,.25)}
+    .gold-big{font-size:32px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--gold);line-height:1.2}
+    .gold-sub{font-size:16px;font-weight:500;color:var(--muted);font-family:'JetBrains Mono',monospace}
+    .signal{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px}
+    .sig-good{background:var(--green-dim);color:var(--green)}.sig-bad{background:var(--red-dim);color:var(--red)}.sig-neutral{background:rgba(255,255,255,.06);color:var(--muted)}
+    .vix-row td{background:var(--bg2)!important;padding:6px 5px}
+    .vix-lbl{font-size:10px;font-weight:700;color:var(--muted)}
+    .vix-val{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}
+    .vix-st{font-size:10px;margin-left:6px;font-weight:600}
+    .footer{font-size:9px;color:var(--text-dim);margin-top:24px;padding-top:12px;border-top:1px solid var(--border)}
+    @media(max-width:1024px){.g3{grid-template-columns:1fr 1fr}.g3>:last-child{grid-column:span 2}.g3eq{grid-template-columns:1fr 1fr}.g3eq>:last-child{grid-column:span 2}.g6{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:768px){.dash{padding:14px 12px 30px}.header h1{font-size:18px;letter-spacing:3px}.section-title{font-size:14px}.g2,.g3,.g3eq{grid-template-columns:1fr}.g3>:last-child,.g3eq>:last-child{grid-column:span 1}.g6{grid-template-columns:repeat(2,1fr)}.gold-big{font-size:24px}table{font-size:10px}th,td{padding:3px 4px}.card{padding:8px 10px}}
+    @media(max-width:480px){.g6{grid-template-columns:1fr 1fr}.cc-price{font-size:13px}}
   </style>
 </head>
 <body>
-  <div id="app"></div>
-  <script>
-    // ─── Data ───
-    const DEMO = {
-      equity: {
-        rebased: {
-          labels: ["Jan-25","Mar-25","May-25","Jul-25","Sep-25","Nov-25","Jan-26","Mar-26","Apr-26"],
-          datasets: {
-            "SMI": [100,100.5,103.5,103.2,106.2,107.0,108.0,108.2,108.5],
-            "EuroStoxx 50": [100,101.0,105.8,107.8,109.0,111.0,112.0,112.5,113.0],
-            "S&P 500": [100,102.8,107.2,109.5,111.5,113.5,114.5,114.8,115.2],
-            "NASDAQ": [100,103.5,109.5,112.0,114.0,115.8,116.3,116.3,116.8],
-            "MSCI EM": [100,99.5,102.0,102.8,104.0,104.8,106.0,106.4,106.8],
-            "Nikkei 225": [100,101.5,105.2,107.5,109.2,110.0,111.5,111.7,112.0],
-          }
-        },
-        current: [
-          {name:"SMI",level:12450,w1:0.8,m1:1.5,ytd:8.2,y1:15.3,pe:19.8},
-          {name:"EuroStoxx 50",level:5280,w1:1.2,m1:2.8,ytd:12.5,y1:18.7,pe:15.2},
-          {name:"S&P 500",level:5950,w1:0.9,m1:3.1,ytd:14.8,y1:22.4,pe:24.5},
-          {name:"NASDAQ",level:19201,w1:1.4,m1:3.8,ytd:16.3,y1:26.1,pe:32.1},
-          {name:"MSCI EM",level:1121,w1:-0.3,m1:-0.5,ytd:6.4,y1:9.8,pe:13.8},
-          {name:"Nikkei 225",level:41200,w1:0.6,m1:1.9,ytd:11.7,y1:19.5,pe:18.2},
-        ],
-      },
-      fx: {
-        rebased: {
-          labels: ["Jan-25","Mar-25","May-25","Jul-25","Sep-25","Nov-25","Jan-26","Mar-26","Apr-26"],
-          datasets: {
-            "EUR/CHF": [100,99.0,98.5,98.0,97.5,97.5,98.0,97.8,97.9],
-            "USD/CHF": [100,98.2,96.8,95.5,94.8,94.5,95.0,94.8,94.7],
-            "GBP/CHF": [100,99.5,98.8,98.2,97.8,97.5,98.2,98.0,98.2],
-            "JPY/CHF": [100,97.8,95.8,94.2,93.5,92.5,93.2,92.8,92.8],
-          }
-        },
-        current: [
-          {name:"EUR/CHF",spot:"0.9385",m1:-0.8,ytd:-2.1,y1:-3.5},
-          {name:"USD/CHF",spot:"0.8620",m1:-1.5,ytd:-5.3,y1:-8.2},
-          {name:"GBP/CHF",spot:"1.0950",m1:-0.6,ytd:-1.8,y1:-2.9},
-          {name:"JPY/CHF",spot:"0.00575",m1:-2.1,ytd:-7.2,y1:-11.5},
-        ],
-      },
-      vix: 16.8,
-      commodities: [
-        {name:"Brent",price:"$78.50",ytd:-4.2,y1:-12.5},
-        {name:"Nat Gas",price:"$3.25",ytd:18.5,y1:32.1},
-        {name:"Copper",price:"$4.85",ytd:12.8,y1:22.3},
-        {name:"Gold",price:"$2'380",ytd:14.5,y1:28.2},
-        {name:"Bitcoin",price:"$96'500",ytd:48.2,y1:95.3},
-        {name:"Ethereum",price:"$3'850",ytd:32.5,y1:68.7},
-      ],
-      rates: {
-        policy: {labels:["SNB","Fed","ECB"], policy:[0.25,4.50,2.75], yield10:[0.52,4.25,2.48]},
-        yields: [
-          {name:"Swiss 10Y",current:"0.52%",d2w:"-3 bp",dytd:"-13 bp"},
-          {name:"US 10Y",current:"4.25%",d2w:"+5 bp",dytd:"-30 bp"},
-          {name:"German Bund 10Y",current:"2.48%",d2w:"+2 bp",dytd:"-18 bp"},
-          {name:"US 2s10s Spread",current:"+35 bp",d2w:"+8 bp",dytd:"+20 bp"},
-          {name:"US IG OAS",current:"95 bp",d2w:"-3 bp",dytd:"-15 bp"},
-          {name:"US HY OAS",current:"340 bp",d2w:"-12 bp",dytd:"-45 bp"},
-        ],
-      },
-      pmi: {
-        countries:["US","Eurozone","Switz.","China","Japan"],
-        rows:[
-          {label:"Current",values:[52.1,47.8,48.5,50.8,49.2]},
-          {label:"Prior",values:[51.5,48.2,49.1,50.2,48.8]},
-          {label:"6M Ago",values:[49.8,46.5,47.2,49.5,50.1]},
-        ],
-      },
-      cpi: {
-        countries:["US","Eurozone","Switz.","China","Japan"],
-        rows:[
-          {label:"Latest",values:["2.8%","2.2%","0.6%","0.1%","3.2%"]},
-          {label:"Prior",values:["3.0%","2.4%","0.8%","0.3%","2.8%"]},
-          {label:"Target",values:["2.0%","2.0%","0-2%","3.0%","2.0%"]},
-        ],
-      },
-      real_estate: {
-        labels:["Jan-25","Apr-25","Jul-25","Oct-25","Jan-26","Apr-26"],
-        datasets:{
-          "CH (3.2%)":[100,101.5,102.8,104.0,105.2,105.8],
-          "EU (3.8%)":[100,102.0,103.5,105.2,106.5,107.2],
-          "US (3.5%)":[100,103.2,105.0,107.0,108.5,109.1],
-          "APAC (4.1%)":[100,100.8,101.5,102.5,103.0,103.5],
-        }
-      },
-      big_mac: {labels:["China","Japan","UK","Eurozone","Switzerland"], values:[-38.5,-44.8,-8.2,-3.5,41.2]},
-    };
+<div class="dash" id="app">
+  <div class="header"><h1>MARKET UPDATE</h1><span class="header-ts" id="headerTs">Loading…</span></div>
+  <div class="subtitle">CHF-based returns · Total return (ETF proxies) · Updated every 5 min during market hours · Source per metric</div>
+  <div class="g2">
+    <div class="card"><div class="card-head"><span class="card-title">Equity Indices — Rebased (Jan-25 = 100)</span><span class="card-ts" id="tsEqC"></span></div><div style="height:220px"><canvas id="eqChart"></canvas></div><div class="card-source">Source: Yahoo Finance (monthly close)</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">FX vs CHF — Rebased (Jan-25 = 100)</span><span class="card-ts" id="tsFxC"></span></div><div style="height:220px"><canvas id="fxChart"></canvas></div><div class="card-source">Source: Yahoo Finance</div></div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="card-head"><span class="card-title">Equity Returns</span><span class="card-ts" id="tsEqT"></span></div><div style="overflow-x:auto"><table><thead><tr><th class="l">Index</th><th>Level</th><th>1W</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody id="eqTB"></tbody></table></div><div class="card-source">Source: Yahoo Finance</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">FX vs CHF</span><span class="card-ts" id="tsFxT"></span></div><div style="overflow-x:auto"><table><thead><tr><th class="l">Pair</th><th>Spot</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody id="fxTB"></tbody></table></div><table><tbody><tr class="vix-row"><td colspan="5" style="text-align:left"><span class="vix-lbl">VIX </span><span class="vix-val" id="vixV">—</span><span class="vix-st" id="vixS"></span></td></tr></tbody></table><div class="card-source">Source: Yahoo Finance</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Trailing P/E</span><span class="card-ts" id="tsPE"></span></div><table><thead><tr><th class="l">Index</th><th>P/E</th></tr></thead><tbody id="peTB"></tbody></table><div class="card-source">Source: Yahoo Finance</div></div>
+  </div>
+  <div class="card" style="margin-bottom:10px"><div class="card-head"><span class="card-title">Commodities & Crypto</span><span class="card-ts" id="tsComm"></span></div><div class="g6" style="margin-top:6px;margin-bottom:0" id="commGrid"></div><div class="card-source">Source: Yahoo Finance</div></div>
+  <div class="section-divider"></div>
+  <div class="section-title">GOLD FOCUS</div>
+  <div class="g3eq">
+    <div class="card gold-hero"><div class="card-head"><span class="card-title">Gold Price</span><span class="card-ts" id="tsGold"></span></div><div style="margin:8px 0 4px"><div class="gold-big" id="goldCHF">—</div><div class="gold-sub" id="goldUSD">—</div></div><table><thead><tr><th class="l"></th><th>1W</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody id="goldRet"></tbody></table><div class="card-source">Source: Yahoo Finance (GC=F) · FX: USD/CHF</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">DXY (Dollar Index)</span><span class="card-ts" id="tsDXY"></span></div><div style="margin:10px 0"><div style="font-size:28px;font-weight:800;font-family:'JetBrains Mono',monospace" id="dxyVal">—</div><div style="margin-top:4px" id="dxyChg"></div></div><div id="dxySig"></div><div class="card-source">Source: Yahoo Finance (DX-Y.NYB)</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Gold vs US Real Yield</span><span class="card-ts" id="tsRY"></span></div><div style="margin:10px 0"><div style="font-size:10px;color:var(--muted);font-weight:600">US 10Y TIPS YIELD</div><div style="font-size:28px;font-weight:800;font-family:'JetBrains Mono',monospace" id="ryVal">—</div></div><div id="rySig"></div><div class="card-source">Source: FRED (DFII10)</div></div>
+  </div>
+  <div class="card" style="margin-bottom:10px"><div class="card-head"><span class="card-title">Gold Miners</span><span class="card-ts" id="tsMin"></span></div><div style="overflow-x:auto"><table><thead><tr><th class="l">Miner</th><th>Price</th><th>P/E</th><th>YTD</th><th>MCap (bn)</th></tr></thead><tbody id="minTB"></tbody></table></div><div class="card-source">Source: Yahoo Finance</div></div>
+  <div class="section-divider"></div>
+  <div class="section-title">MACRO & RATES</div>
+  <div class="g2">
+    <div class="card"><div class="card-head"><span class="card-title">Policy Rates vs 10Y Yields (%)</span><span class="card-ts" id="tsRtC"></span></div><div style="height:200px"><canvas id="ratesChart"></canvas></div><div class="card-source">Source: FRED · SNB · ECB</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Yields & Credit Spreads</span><span class="card-ts" id="tsYld"></span></div><div style="overflow-x:auto"><table><thead><tr><th class="l">Benchmark</th><th>Current</th><th>Δ 2W</th><th>Δ YTD</th></tr></thead><tbody id="yldTB"></tbody></table></div><div class="card-source">Source: FRED · SNB</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-head"><span class="card-title">Manufacturing PMI (>50 = Expansion)</span><span class="card-ts" id="tsPMI"></span></div><div style="overflow-x:auto"><table><thead id="pmiH"></thead><tbody id="pmiTB"></tbody></table></div><div class="card-source">Source: S&P Global (manual)</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Inflation — CPI YoY (%)</span><span class="card-ts" id="tsCPI"></span></div><div style="overflow-x:auto"><table><thead id="cpiH"></thead><tbody id="cpiTB"></tbody></table></div><div class="card-source">Source: BLS · Eurostat · BFS · NBS · MIC</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-head"><span class="card-title">Listed Real Estate — Rebased (Jan-25 = 100)</span><span class="card-ts" id="tsRE"></span></div><div style="height:200px"><canvas id="reChart"></canvas></div><div class="card-source">Source: Yahoo Finance (ETF proxies)</div></div>
+    <div class="card"><div class="card-head"><span class="card-title">Big Mac Index — % Over/Undervalued vs USD</span><span class="card-ts" id="tsBM"></span></div><div style="height:200px"><canvas id="bmChart"></canvas></div><div class="card-source">Source: The Economist (GitHub)</div></div>
+  </div>
+  <div class="footer">Returns methodology: CHF total return = (P_t/P_0) × (FX_t/FX_0) − 1 · ETF proxies: SPY, QQQ, EWL, FEZ, EEM, EWJ · Periods: 1W=5bd, 1M=21bd, YTD=1st trading day, 1Y=252bd · Auto-refreshes every 5 min</div>
+</div>
+<script>
+const EQ=['SMI','EuroStoxx 50','S&P 500','NASDAQ','MSCI EM','Nikkei 225'],FX=['EUR/CHF','USD/CHF','GBP/CHF','JPY/CHF'],CM=['Brent','Nat Gas','Copper','Gold','Bitcoin','Ethereum'],MN=['Agnico Eagle','Alamos Gold','New Gold','Newmont','Perpetua','Wesdome'],YO=['Swiss 10Y','US 10Y','German Bund 10Y','US 2s10s Spread','US IG OAS','US HY OAS'],PS={'EuroStoxx 50':'EuroStoxx','Nikkei 225':'Nikkei'},CL={eq:['#C9A84C','#2EBFBF','#E8EAF0','#60A5FA','#FBBF24','#A78BFA'],fx:['#C9A84C','#2EBFBF','#E8EAF0','#FBBF24'],re:['#C9A84C','#2EBFBF','#E8EAF0','#FBBF24']};
+Chart.defaults.color='#6B7394';Chart.defaults.borderColor='#2A3048';Chart.defaults.font.family="'DM Sans',sans-serif";Chart.defaults.font.size=10;
+const ch={};
+function $(id){return document.getElementById(id)}
+function pct(v){if(v==null||isNaN(v))return'<span class="d">\u2014</span>';const c=v>0?'g':v<0?'r':'';return`<span class="${c}">${v>0?'+':''}${v.toFixed(1)}%</span>`}
+function dl(t){if(!t||t==='N/A')return'<span class="d">\u2014</span>';const c=t.startsWith('+')?'g':t.startsWith('-')?'r':'';return`<span class="${c}">${t}</span>`}
+function lv(v){if(v==null||isNaN(v))return'\u2014';return v>=100?Math.round(v).toLocaleString('de-CH'):v.toFixed(2)}
+function fp(v){if(v==null||isNaN(v))return'\u2014';if(v>=10000)return v.toLocaleString('de-CH',{maximumFractionDigits:0});if(v>=100)return v.toLocaleString('de-CH',{maximumFractionDigits:0});if(v>=1)return v.toLocaleString('de-CH',{maximumFractionDigits:2});return v.toLocaleString('de-CH',{maximumFractionDigits:4})}
+function pm(v){if(v==null)return'<span class="d">\u2014</span>';return`<span class="${v>=50?'g':'r'}" style="font-weight:600">${v.toFixed(1)}</span>`}
+function ts(d){if(!d)return'';try{const dt=new Date(d);return'as of '+dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}catch{return''}}
+function lc(id,lb,ds,cl){if(ch[id])ch[id].destroy();ch[id]=new Chart($(id),{type:'line',data:{labels:lb,datasets:Object.entries(ds).map(([n,d],i)=>({label:n,data:d,borderColor:cl[i]||'#888',backgroundColor:'transparent',borderWidth:1.5,pointRadius:0,tension:.3}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:8,font:{size:9}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#2A3048'}}}}})}
+function bc(id,lb,ds,cl){if(ch[id])ch[id].destroy();ch[id]=new Chart($(id),{type:'bar',data:{labels:lb,datasets:ds.map((d,i)=>({label:d.label,data:d.data,backgroundColor:cl[i],borderRadius:3,barPercentage:.7}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:ds.length>1,position:'bottom',labels:{boxWidth:10,padding:8,font:{size:9}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#2A3048'}}}}})}
 
-    // ─── Helpers ───
-    function pct(v) {
-      if (v == null) return '<span class="muted">—</span>';
-      const cls = v > 0 ? "green" : v < 0 ? "red" : "";
-      return `<span class="${cls}">${v > 0 ? "+" : ""}${v.toFixed(1)}%</span>`;
-    }
-    function delta(t) {
-      if (!t || t === "N/A") return '<span class="muted">—</span>';
-      const cls = t.startsWith("+") ? "green" : t.startsWith("-") ? "red" : "";
-      return `<span class="${cls}">${t}</span>`;
-    }
-    function pmiColor(v) {
-      const cls = v >= 50 ? "green" : "red";
-      return `<span class="${cls}" style="font-weight:600">${v.toFixed(1)}</span>`;
-    }
-    function fmtLevel(v) { return v ? Math.round(v).toLocaleString("de-CH") : "—"; }
+function render(D){
+  const t=ts(D.timestamp);$('headerTs').textContent=t;
+  // Equity chart
+  if(D.equity?.rebased?.length){const lb=D.equity.rebased.map(r=>r.month),nm=Object.keys(D.equity.rebased[0]).filter(k=>k!=='month'),ds={};nm.forEach(n=>{ds[n]=D.equity.rebased.map(r=>r[n])});lc('eqChart',lb,ds,CL.eq);$('tsEqC').textContent=t}
+  // FX chart
+  if(D.fx?.rebased?.length){const lb=D.fx.rebased.map(r=>r.month),nm=Object.keys(D.fx.rebased[0]).filter(k=>k!=='month'),ds={};nm.forEach(n=>{ds[n]=D.fx.rebased.map(r=>r[n])});lc('fxChart',lb,ds,CL.fx);$('tsFxC').textContent=t}
+  // Equity table
+  if(D.equity?.current){let h='';EQ.forEach(n=>{const r=D.equity.current[n];if(!r)return;h+=`<tr><td class="l">${n}</td><td>${lv(r.price)}</td><td>${pct(r.w1)}</td><td>${pct(r.m1)}</td><td>${pct(r.ytd)}</td><td>${pct(r.y1)}</td></tr>`});$('eqTB').innerHTML=h;$('tsEqT').textContent=t}
+  // FX table
+  if(D.fx?.current){let h='';FX.forEach(n=>{const r=D.fx.current[n];if(!r)return;h+=`<tr><td class="l">${n}</td><td>${r.price!=null?r.price.toFixed(4):'\u2014'}</td><td>${pct(r.m1)}</td><td>${pct(r.ytd)}</td><td>${pct(r.y1)}</td></tr>`});$('fxTB').innerHTML=h;$('tsFxT').textContent=t}
+  // P/E
+  if(D.equity?.current){let h='';EQ.forEach(n=>{const r=D.equity.current[n];if(!r)return;h+=`<tr><td class="l">${PS[n]||n}</td><td>${r.pe!=null?r.pe.toFixed(1)+'x':'\u2014'}</td></tr>`});$('peTB').innerHTML=h;$('tsPE').textContent=t}
+  // VIX
+  if(D.vix!=null){$('vixV').textContent=D.vix.toFixed(1);if(D.vix<20){$('vixV').style.color='var(--green)';$('vixS').textContent='Low (<20)';$('vixS').style.color='var(--green)'}else if(D.vix<30){$('vixV').style.color='var(--orange)';$('vixS').textContent='Elevated';$('vixS').style.color='var(--orange)'}else{$('vixV').style.color='var(--red)';$('vixS').textContent='High Stress';$('vixS').style.color='var(--red)'}}
+  // Commodities
+  if(D.commodities){let h='';CM.forEach(n=>{const r=D.commodities[n];if(!r)return;h+=`<div class="cc"><div class="cc-name">${n}</div><div class="cc-price">${fp(r.price)}</div><div class="cc-pct">YTD ${pct(r.ytd)}</div><div class="cc-pct">1Y ${pct(r.y1)}</div></div>`});$('commGrid').innerHTML=h;$('tsComm').textContent=t}
+  // Gold
+  if(D.commodities?.Gold){const g=D.commodities.Gold,uc=D.fx?.current?.['USD/CHF']?.price;$('goldUSD').textContent=g.price!=null?'USD '+fp(g.price):'\u2014';$('goldCHF').textContent=(g.price!=null&&uc!=null)?'CHF '+fp(g.price*uc):'CHF \u2014';let h=`<tr><td class="l" style="color:var(--muted);font-size:10px">USD</td><td>${pct(g.w1)}</td><td>${pct(g.m1)}</td><td>${pct(g.ytd)}</td><td>${pct(g.y1)}</td></tr>`;h+=`<tr><td class="l" style="color:var(--gold);font-size:10px;font-weight:600">CHF</td><td><span class="d">\u2014</span></td><td><span class="d">\u2014</span></td><td><span class="d">\u2014</span></td><td><span class="d">\u2014</span></td></tr>`;$('goldRet').innerHTML=h;$('tsGold').textContent=t}
+  // DXY
+  if(D.dxy){const dx=D.dxy;$('dxyVal').textContent=dx.price!=null?dx.price.toFixed(2):'\u2014';let c='';if(dx.m1!=null)c+=`<span style="font-size:12px;margin-right:8px">1M ${pct(dx.m1)}</span>`;if(dx.ytd!=null)c+=`<span style="font-size:12px">YTD ${pct(dx.ytd)}</span>`;$('dxyChg').innerHTML=c;if(dx.price!=null){if(dx.price<100)$('dxySig').innerHTML='<span class="signal sig-good">SUPPORTIVE \u2014 Weak USD below 100</span>';else if(dx.price>105)$('dxySig').innerHTML='<span class="signal sig-bad">HEADWIND \u2014 Strong USD above 105</span>';else $('dxySig').innerHTML='<span class="signal sig-neutral">NEUTRAL \u2014 USD 100-105</span>'}$('tsDXY').textContent=t}
+  // Real Yield
+  if(D.real_yield){const ry=D.real_yield.value;$('ryVal').textContent=ry!=null?ry.toFixed(2)+'%':'\u2014';if(ry!=null){if(ry<0.5)$('rySig').innerHTML='<span class="signal sig-good">SUPPORTIVE \u2014 Low real yields</span>';else if(ry>2.0)$('rySig').innerHTML='<span class="signal sig-bad">HEADWIND \u2014 High real yields</span>';else $('rySig').innerHTML='<span class="signal sig-neutral">NEUTRAL</span>'}$('tsRY').textContent=t}
+  // Miners
+  if(D.gold_miners){let h='';MN.forEach(n=>{const r=D.gold_miners[n];if(!r)return;h+=`<tr><td class="l">${n}</td><td>${fp(r.price)}</td><td>${r.pe!=null?r.pe.toFixed(1)+'x':'\u2014'}</td><td>${pct(r.ytd)}</td><td>${r.mcap!=null?r.mcap.toFixed(1):'\u2014'}</td></tr>`});$('minTB').innerHTML=h;$('tsMin').textContent=t}
+  // Rates chart
+  if(D.rates?.policy){const p=D.rates.policy;bc('ratesChart',p.map(r=>r.name),[{label:'Policy Rate',data:p.map(r=>r.policy)},{label:'10Y Yield',data:p.map(r=>r.yield10)}],['#C9A84C','#2EBFBF']);$('tsRtC').textContent=t}
+  // Yields table
+  if(D.rates?.yields_spreads){let h='';YO.forEach(n=>{const r=D.rates.yields_spreads[n];if(!r)return;h+=`<tr><td class="l">${n}</td><td>${r.current||'\u2014'}</td><td>${dl(r.d2w)}</td><td>${dl(r.dytd)}</td></tr>`});$('yldTB').innerHTML=h;$('tsYld').textContent=t}
+  // PMI
+  if(D.pmi){$('pmiH').innerHTML=`<tr><th class="l"></th>${D.pmi.countries.map(c=>`<th>${c}</th>`).join('')}</tr>`;let h='';[{l:'Current',v:D.pmi.current},{l:'Prior',v:D.pmi.prior},{l:'6M Ago',v:D.pmi.six_months_ago}].forEach(r=>{h+=`<tr><td class="l">${r.l}</td>${r.v.map(v=>`<td>${pm(v)}</td>`).join('')}</tr>`});$('pmiTB').innerHTML=h;$('tsPMI').textContent='as of '+(D.pmi.last_updated||'')}
+  // CPI
+  if(D.cpi){$('cpiH').innerHTML=`<tr><th class="l"></th>${D.cpi.countries.map(c=>`<th>${c}</th>`).join('')}</tr>`;let h='';[{l:'Latest',v:D.cpi.latest},{l:'Prior',v:D.cpi.prior},{l:'Target',v:D.cpi.target}].forEach(r=>{h+=`<tr><td class="l">${r.l}</td>${r.v.map(v=>`<td>${v||'\u2014'}</td>`).join('')}</tr>`});$('cpiTB').innerHTML=h;$('tsCPI').textContent=t}
+  // RE chart
+  if(D.real_estate?.rebased?.length){const lb=D.real_estate.rebased.map(r=>r.month),nm=Object.keys(D.real_estate.rebased[0]).filter(k=>k!=='month'),ds={};nm.forEach(n=>{ds[n]=D.real_estate.rebased.map(r=>r[n])});lc('reChart',lb,ds,CL.re);$('tsRE').textContent=t}
+  // Big Mac
+  if(D.big_mac?.length){const lb=D.big_mac.map(b=>b.country),vl=D.big_mac.map(b=>b.value),cl=vl.map(v=>v>0?'#C9A84C':'#2EBFBF');if(ch.bm)ch.bm.destroy();ch.bm=new Chart($('bmChart'),{type:'bar',data:{labels:lb,datasets:[{label:'% vs USD',data:vl,backgroundColor:cl,borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#2A3048'}},y:{grid:{display:false}}}}});$('tsBM').textContent=t}
+}
 
-    const COLORS = {
-      equity: ["#C9A84C","#2EBFBF","#FFFFFF","#5DADE2","#E8913A","#9B59B6"],
-      fx: ["#C9A84C","#2EBFBF","#FFFFFF","#E8913A"],
-      re: ["#C9A84C","#2EBFBF","#FFFFFF","#E8913A"],
-    };
-
-    Chart.defaults.color = "#8899AA";
-    Chart.defaults.borderColor = "#3A4158";
-    Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-    Chart.defaults.font.size = 10;
-
-    function makeLineChart(canvasId, labels, datasets, colors) {
-      const ds = Object.entries(datasets).map(([name, data], i) => ({
-        label: name, data, borderColor: colors[i], backgroundColor: "transparent",
-        borderWidth: 1.5, pointRadius: 0, tension: 0.3,
-      }));
-      new Chart(document.getElementById(canvasId), {
-        type: "line", data: { labels, datasets: ds },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { position: "bottom", labels: { boxWidth: 12, padding: 8, font: { size: 9 } } } },
-          scales: { x: { grid: { display: false } }, y: { grid: { color: "#3A4158" } } },
-        },
-      });
-    }
-
-    function makeBarChart(canvasId, labels, datasets, colors, horizontal = false) {
-      const ds = datasets.map((d, i) => ({
-        label: d.label, data: d.data, backgroundColor: colors[i],
-        borderRadius: 3, barPercentage: 0.7,
-      }));
-      new Chart(document.getElementById(canvasId), {
-        type: "bar", data: { labels, datasets: ds },
-        options: {
-          indexAxis: horizontal ? "y" : "x",
-          responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: datasets.length > 1, position: "bottom", labels: { boxWidth: 12, padding: 8, font: { size: 9 } } } },
-          scales: {
-            x: { grid: { display: horizontal } },
-            y: { grid: { color: "#3A4158", display: !horizontal }, display: true },
-          },
-        },
-      });
-    }
-
-    // ─── Render ───
-    function render(data, isDemo) {
-      const vix = data.vix || 16.8;
-      const vixColor = vix < 20 ? "green" : vix < 30 ? "orange" : "red";
-      const vixLabel = vix < 20 ? "Low (<20)" : vix < 30 ? "Elevated" : "High Stress";
-      const dateStr = isDemo ? "Demo Data" : new Date().toLocaleDateString("en-GB", {day:"numeric",month:"short",year:"numeric"});
-
-      let html = `
-        <div style="margin-bottom:16px">
-          <h1>MARKET UPDATE</h1>
-          <div class="subtitle">as of ${dateStr} &nbsp;|&nbsp; Source: Yahoo Finance, FRED, SNB, ECB, The Economist
-            ${isDemo ? '<span class="demo-badge">● DEMO DATA — run fetch_data.py for live data</span>' : ''}
-          </div>
-        </div>
-
-        <!-- Row 1: Charts -->
-        <div class="grid2">
-          <div class="card"><div class="card-title">Equity Indices — Rebased (Jan-25 = 100)</div><div style="height:220px"><canvas id="eqChart"></canvas></div></div>
-          <div class="card"><div class="card-title">FX vs CHF — Rebased (Jan-25 = 100)</div><div style="height:220px"><canvas id="fxChart"></canvas></div></div>
-        </div>
-
-        <!-- Row 2: Tables -->
-        <div class="grid3">
-          <div class="card"><div class="card-title">Equity Returns</div>
-            <table><thead><tr><th class="left">Index</th><th>Level</th><th>1W</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody>
-              ${data.equity.current.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name}</td><td>${fmtLevel(r.level)}</td><td>${pct(r.w1)}</td><td>${pct(r.m1)}</td><td>${pct(r.ytd)}</td><td>${pct(r.y1)}</td></tr>`).join("")}
-            </tbody></table>
-          </div>
-          <div class="card"><div class="card-title">FX vs CHF</div>
-            <table><thead><tr><th class="left">Pair</th><th>Spot</th><th>1M</th><th>YTD</th><th>1Y</th></tr></thead><tbody>
-              ${data.fx.current.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name}</td><td>${r.spot}</td><td>${pct(r.m1)}</td><td>${pct(r.ytd)}</td><td>${pct(r.y1)}</td></tr>`).join("")}
-              <tr><td colspan="5" class="vix-row"><span class="vix-label">VIX </span><span class="vix-value ${vixColor}">${vix.toFixed(1)}</span><span class="vix-status ${vixColor}">${vixLabel}</span></td></tr>
-            </tbody></table>
-          </div>
-          <div class="card"><div class="card-title">Trailing P/E</div>
-            <table><thead><tr><th class="left">Index</th><th>P/E</th></tr></thead><tbody>
-              ${data.equity.current.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name.replace("EuroStoxx 50","EuroStoxx").replace("Nikkei 225","Nikkei")}</td><td>${r.pe ? r.pe.toFixed(1)+"x" : "—"}</td></tr>`).join("")}
-            </tbody></table>
-          </div>
-        </div>
-
-        <!-- Row 3: Commodities -->
-        <div class="card" style="margin-bottom:12px"><div class="card-title">Commodities & Crypto</div>
-          <div class="commodity-grid">
-            ${data.commodities.map(c => `<div class="commodity-card"><div class="commodity-name">${c.name}</div><div class="commodity-price">${c.price}</div><div class="commodity-pct">YTD ${pct(c.ytd)}</div><div class="commodity-pct">1Y ${pct(c.y1)}</div></div>`).join("")}
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <h2>MACRO & RATES</h2>
-
-        <!-- Row 4: Rates -->
-        <div class="grid2">
-          <div class="card"><div class="card-title">Policy Rates vs 10Y Yields (%)</div><div style="height:200px"><canvas id="ratesChart"></canvas></div></div>
-          <div class="card"><div class="card-title">Yields & Credit Spreads (FRED)</div>
-            <table><thead><tr><th class="left">Benchmark</th><th>Current</th><th>Δ 2W</th><th>Δ YTD</th></tr></thead><tbody>
-              ${data.rates.yields.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.name}</td><td>${r.current}</td><td>${delta(r.d2w)}</td><td>${delta(r.dytd)}</td></tr>`).join("")}
-            </tbody></table>
-          </div>
-        </div>
-
-        <!-- Row 5: PMI + CPI -->
-        <div class="grid2">
-          <div class="card"><div class="card-title">Manufacturing PMI (>50 = Expansion) | Semi-manual</div>
-            <table><thead><tr><th class="left"></th>${data.pmi.countries.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
-              ${data.pmi.rows.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.label}</td>${r.values.map(v=>`<td>${pmiColor(v)}</td>`).join("")}</tr>`).join("")}
-            </tbody></table>
-          </div>
-          <div class="card"><div class="card-title">Inflation — CPI YoY (%)</div>
-            <table><thead><tr><th class="left"></th>${data.cpi.countries.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
-              ${data.cpi.rows.map((r,i) => `<tr class="${i%2===0?'even':''}"><td class="left">${r.label}</td>${r.values.map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}
-            </tbody></table>
-          </div>
-        </div>
-
-        <!-- Row 6: RE + Big Mac -->
-        <div class="grid2">
-          <div class="card"><div class="card-title">Listed Real Estate — Rebased (Jan-25 = 100)</div><div style="height:200px"><canvas id="reChart"></canvas></div></div>
-          <div class="card"><div class="card-title">Big Mac Index — % Over/Undervalued vs USD</div><div style="height:200px"><canvas id="bmChart"></canvas></div></div>
-        </div>
-
-        <div class="footer">Data: Yahoo Finance (equities, FX, commodities, crypto, P/E) | FRED (yields, credit spreads) | SNB/ECB (policy rates) | BLS/Eurostat/BFS (CPI) | The Economist (Big Mac) | PMI: semi-manual</div>
-      `;
-
-      document.getElementById("app").innerHTML = html;
-
-      // Draw charts after DOM is ready
-      makeLineChart("eqChart", data.equity.rebased.labels, data.equity.rebased.datasets, COLORS.equity);
-      makeLineChart("fxChart", data.fx.rebased.labels, data.fx.rebased.datasets, COLORS.fx);
-      makeLineChart("reChart", data.real_estate.labels, data.real_estate.datasets, COLORS.re);
-
-      makeBarChart("ratesChart", data.rates.policy.labels,
-        [{label:"Policy Rate",data:data.rates.policy.policy},{label:"10Y Yield",data:data.rates.policy.yield10}],
-        ["#C9A84C","#2EBFBF"]
-      );
-
-      // Big Mac — horizontal bar with conditional colors
-      const bmColors = data.big_mac.values.map(v => v > 0 ? "#C9A84C" : "#2EBFBF");
-      new Chart(document.getElementById("bmChart"), {
-        type: "bar", data: {
-          labels: data.big_mac.labels,
-          datasets: [{ label: "% vs USD", data: data.big_mac.values, backgroundColor: bmColors, borderRadius: 3 }],
-        },
-        options: {
-          indexAxis: "y", responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { x: { grid: { color: "#3A4158" } }, y: { grid: { display: false } } },
-        },
-      });
-    }
-
-    // ─── Load data ───
-    fetch("data.json")
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(data => {
-        // Transform data.json format to match our render format
-        // For now, if data.json exists and has the right structure, use it
-        // Otherwise fall back to demo
-        if (data && data.equity) {
-          // TODO: transform live data.json structure to match DEMO format
-          // For now, use demo with live timestamp
-          render(DEMO, data.demo !== false);
-        } else {
-          render(DEMO, true);
-        }
-      })
-      .catch(() => render(DEMO, true));
-  </script>
+function loadData(){
+  fetch('data.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('No data.json');return r.json()}).then(d=>render(d)).catch(e=>{$('headerTs').textContent='Error: '+e.message;console.error(e)});
+}
+loadData();
+setInterval(loadData,5*60*1000);
+</script>
 </body>
 </html>
