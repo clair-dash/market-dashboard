@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-09T06:45:38.967688",
+  "timestamp": "2026-04-09T06:58:41.395464",
   "demo": false,
   "equity": {
     "rebased": [
@@ -166,7 +166,7 @@
         "pe": null
       },
       "S&P 500": {
-        "price": NaN,
+        "price": null,
         "w1": null,
         "m1": null,
         "ytd": null,
@@ -174,7 +174,7 @@
         "pe": null
       },
       "NASDAQ": {
-        "price": NaN,
+        "price": null,
         "w1": null,
         "m1": null,
         "ytd": null,
@@ -182,7 +182,7 @@
         "pe": null
       },
       "MSCI EM": {
-        "price": NaN,
+        "price": null,
         "w1": null,
         "m1": null,
         "ytd": null,
@@ -308,15 +308,15 @@
       },
       {
         "month": "Apr-26",
-        "EUR/CHF": 97.63,
-        "USD/CHF": 87.08,
-        "GBP/CHF": 93.86,
+        "EUR/CHF": 97.61,
+        "USD/CHF": 87.04,
+        "GBP/CHF": 93.8,
         "JPY/CHF": 84.75
       }
     ],
     "current": {
       "EUR/CHF": {
-        "price": 0.9232,
+        "price": 0.923,
         "w1": null,
         "m1": null,
         "ytd": null,
@@ -324,7 +324,7 @@
         "pe": null
       },
       "USD/CHF": {
-        "price": 0.7919,
+        "price": 0.7915,
         "w1": null,
         "m1": null,
         "ytd": null,
@@ -332,7 +332,7 @@
         "pe": null
       },
       "GBP/CHF": {
-        "price": 1.0604,
+        "price": 1.0598,
         "w1": null,
         "m1": null,
         "ytd": null,
@@ -351,7 +351,7 @@
   },
   "commodities": {
     "Brent": {
-      "price": 96.96,
+      "price": 97.02,
       "w1": null,
       "m1": null,
       "ytd": null,
@@ -359,7 +359,7 @@
       "pe": null
     },
     "Nat Gas": {
-      "price": 2.724,
+      "price": 2.725,
       "w1": null,
       "m1": null,
       "ytd": null,
@@ -367,7 +367,7 @@
       "pe": null
     },
     "Copper": {
-      "price": 5.723,
+      "price": 5.7275,
       "w1": null,
       "m1": null,
       "ytd": null,
@@ -375,7 +375,7 @@
       "pe": null
     },
     "Gold": {
-      "price": 4740.6001,
+      "price": 4737.5,
       "w1": null,
       "m1": null,
       "ytd": null,
@@ -383,7 +383,7 @@
       "pe": null
     },
     "Bitcoin": {
-      "price": 70940.2812,
+      "price": 71000.9922,
       "w1": null,
       "m1": null,
       "ytd": null,
@@ -391,7 +391,7 @@
       "pe": null
     },
     "Ethereum": {
-      "price": 2178.2075,
+      "price": 2180.5771,
       "w1": null,
       "m1": null,
       "ytd": null,
@@ -401,7 +401,7 @@
   },
   "vix": 25.8,
   "dxy": {
-    "price": 99.11,
+    "price": 99.07,
     "w1": null,
     "m1": null,
     "ytd": null,
@@ -409,7 +409,7 @@
   },
   "gold_miners": {
     "Agnico Eagle": {
-      "price": NaN,
+      "price": null,
       "pe": 24.3,
       "w1": null,
       "m1": null,
@@ -418,7 +418,7 @@
       "mcap": 108.6
     },
     "Alamos Gold": {
-      "price": NaN,
+      "price": null,
       "pe": 22.7,
       "w1": null,
       "m1": null,
@@ -436,7 +436,7 @@
       "mcap": 7.2
     },
     "Newmont": {
-      "price": NaN,
+      "price": null,
       "pe": 18.5,
       "w1": null,
       "m1": null,
@@ -445,7 +445,7 @@
       "mcap": 128.5
     },
     "Perpetua": {
-      "price": NaN,
+      "price": null,
       "pe": null,
       "w1": null,
       "m1": null,
@@ -454,7 +454,7 @@
       "mcap": 3.7
     },
     "Wesdome": {
-      "price": NaN,
+      "price": null,
       "pe": 12.1,
       "w1": null,
       "m1": null,
