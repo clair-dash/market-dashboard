@@ -132,12 +132,15 @@ def safe_download(ticker, **kwargs):
 
 
 def get_quote(ticker):
-    """Get current quote using yf.download for reliability (info endpoint is flaky)."""
+    """Get current quote using yf.download for reliability."""
+    import math
     try:
         df = safe_download(ticker, period="5d", interval="1d")
         if df.empty:
             return None, None
-        price = float(df["Close"].iloc[-1])
+        price = float(df["Close"].dropna().iloc[-1])
+        if math.isnan(price) or math.isinf(price):
+            return None, None
         # Try to get P/E from info
         pe = None
         try:
@@ -145,7 +148,11 @@ def get_quote(ticker):
             info = tk.info or {}
             pe = info.get("trailingPE")
             if pe is not None:
-                pe = round(float(pe), 1)
+                pe = float(pe)
+                if math.isnan(pe) or math.isinf(pe):
+                    pe = None
+                else:
+                    pe = round(pe, 1)
         except Exception:
             pass
         return round(price, 4), pe
@@ -156,40 +163,54 @@ def get_quote(ticker):
 
 def compute_returns(ticker, current_price):
     """Compute 1W, 1M, YTD, 1Y returns from historical data."""
+    import math
     if current_price is None:
         return None, None, None, None
     try:
-        today = datetime.now()
         df = safe_download(ticker, period="13mo", interval="1d")
         if df.empty or len(df) < 5:
             return None, None, None, None
         closes = df["Close"].dropna()
+        if len(closes) < 2:
+            return None, None, None, None
 
-        def get_past(days_ago):
-            target_idx = max(0, len(closes) - days_ago - 1)
-            if target_idx < 0 or target_idx >= len(closes):
+        def safe_pct(past_price):
+            if past_price is None or past_price == 0:
                 return None
-            return float(closes.iloc[target_idx])
-
-        def pct(past):
-            if past is None or past == 0:
+            val = (current_price - past_price) / past_price * 100
+            if math.isnan(val) or math.isinf(val):
                 return None
-            return round((current_price - past) / past * 100, 2)
+            return round(val, 2)
 
-        w1 = pct(get_past(5))
-        m1 = pct(get_past(21))
+        def price_n_days_ago(n):
+            """Get price approximately n trading days from the end."""
+            idx = len(closes) - 1 - n
+            if idx < 0:
+                idx = 0
+            val = float(closes.iloc[idx])
+            if math.isnan(val) or math.isinf(val):
+                return None
+            return val
 
-        # YTD
+        w1 = safe_pct(price_n_days_ago(5))
+        m1 = safe_pct(price_n_days_ago(21))
+
+        # YTD — find first trading day of current year
         ytd = None
-        start_of_year = datetime(today.year, 1, 1)
-        ytd_data = closes[closes.index >= pd.Timestamp(start_of_year).tz_localize(closes.index.tz) if closes.index.tz else pd.Timestamp(start_of_year)]
-        if len(ytd_data) > 0:
-            ytd_start = float(ytd_data.iloc[0])
-            if ytd_start != 0:
-                ytd = round((current_price - ytd_start) / ytd_start * 100, 2)
+        try:
+            year_start = pd.Timestamp(datetime(datetime.now().year, 1, 1))
+            if closes.index.tz is not None:
+                year_start = year_start.tz_localize(closes.index.tz)
+            ytd_data = closes[closes.index >= year_start]
+            if len(ytd_data) > 0:
+                ytd_start = float(ytd_data.iloc[0])
+                if not math.isnan(ytd_start) and ytd_start != 0:
+                    ytd = safe_pct(ytd_start)
+        except Exception as e:
+            log.warning(f"YTD calc failed for {ticker}: {e}")
 
         # 1Y
-        y1 = pct(get_past(252)) if len(closes) > 252 else pct(float(closes.iloc[0]))
+        y1 = safe_pct(price_n_days_ago(252)) if len(closes) > 252 else safe_pct(float(closes.iloc[0]))
 
         return w1, m1, ytd, y1
     except Exception as e:
@@ -277,7 +298,7 @@ def fetch_fred_series(series_id, lookback_days=365):
             f"https://api.stlouisfed.org/fred/series/observations"
             f"?series_id={series_id}&api_key={FRED_API_KEY}"
             f"&observation_start={start}&observation_end={end}"
-            f"&file_type=json&sort_order=desc&limit=30"
+            f"&file_type=json&sort_order=desc&limit=100"
         )
         resp = requests.get(url, timeout=15)
         resp.raise_for_status()
@@ -312,7 +333,7 @@ def fetch_fred_yields_and_spreads():
         if name in skip:
             continue
         try:
-            obs = fetch_fred_series(series_id, lookback_days=400)
+            obs = fetch_fred_series(series_id, lookback_days=500)
             if not obs:
                 result[name] = {"current": None, "d2w": None, "dytd": None}
                 continue
@@ -481,16 +502,18 @@ def build_data():
         log.info(f"  Miner: {name} ({ticker})...")
         price, pe = get_quote(ticker)
         w1, m1, ytd, y1 = compute_returns(ticker, price)
-        # Market cap
         mcap = None
         try:
             tk = yf.Ticker(ticker)
             info = tk.info or {}
-            mcap = info.get("marketCap")
-            if mcap:
-                mcap = round(mcap / 1e9, 1)  # billions
-        except Exception:
-            pass
+            mc = info.get("marketCap")
+            if mc is not None:
+                import math
+                mc = float(mc)
+                if not math.isnan(mc) and not math.isinf(mc) and mc > 0:
+                    mcap = round(mc / 1e9, 1)
+        except Exception as e:
+            log.warning(f"  MCap failed for {name}: {e}")
         miners_data[name] = {
             "price": price, "pe": pe,
             "w1": w1, "m1": m1, "ytd": ytd, "y1": y1,
