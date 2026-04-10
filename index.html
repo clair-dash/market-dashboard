@@ -57,7 +57,7 @@
 <body>
 <div class="dash" id="app">
   <div class="header"><h1>MARKET UPDATE</h1><span class="header-ts" id="headerTs">Loading…</span></div>
-  <div class="subtitle">CHF-based returns · Total return (ETF proxies) · Updated every 5 min during market hours · Source per metric</div>
+  <div class="subtitle">CHF-based returns · Total return (ETF proxies) · Updated every 6 min during market hours · Source per metric</div>
   <div class="g2">
     <div class="card"><div class="card-head"><span class="card-title">Equity Indices — Rebased (Jan-25 = 100)</span><span class="card-ts" id="tsEqC"></span></div><div style="height:220px"><canvas id="eqChart"></canvas></div><div class="card-source">Source: Yahoo Finance (monthly close)</div></div>
     <div class="card"><div class="card-head"><span class="card-title">FX vs CHF — Rebased (Jan-25 = 100)</span><span class="card-ts" id="tsFxC"></span></div><div style="height:220px"><canvas id="fxChart"></canvas></div><div class="card-source">Source: Yahoo Finance</div></div>
@@ -148,7 +148,7 @@ function loadData(){
   fetch('data.json?t='+Date.now()).then(r=>{if(!r.ok)throw new Error('No data.json');return r.json()}).then(d=>render(d)).catch(e=>{$('headerTs').textContent='Error: '+e.message;console.error(e)});
 }
 loadData();
-setInterval(loadData,5*60*1000);
+setInterval(loadData,6*60*1000);
 </script>
 </body>
 </html>
