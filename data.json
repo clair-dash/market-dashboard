@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-08T22:15:24.738680Z",
+  "timestamp": "2026-05-08T23:14:46.080218Z",
   "demo": false,
   "equity": {
     "rebased": [
@@ -383,19 +383,19 @@
       "pe": null
     },
     "Bitcoin": {
-      "price": 80399.9688,
-      "w1": 2.37,
-      "m1": 4.24,
-      "ytd": -9.39,
-      "y1": -25.84,
+      "price": 80207.4688,
+      "w1": 2.13,
+      "m1": 3.99,
+      "ytd": -9.61,
+      "y1": -26.02,
       "pe": null
     },
     "Ethereum": {
-      "price": 2317.73,
-      "w1": -0.17,
-      "m1": -4.27,
-      "ytd": -22.75,
-      "y1": -46.84,
+      "price": 2307.3601,
+      "w1": -0.61,
+      "m1": -4.7,
+      "ytd": -23.1,
+      "y1": -47.08,
       "pe": null
     }
   },
@@ -470,7 +470,7 @@
     }
   },
   "real_yield": {
-    "value": 1.96
+    "value": null
   },
   "rates": {
     "policy": [
@@ -482,24 +482,24 @@
       {
         "name": "Fed",
         "policy": 3.75,
-        "yield10": 4.41
+        "yield10": null
       },
       {
         "name": "ECB",
         "policy": 2.75,
-        "yield10": 2.91
+        "yield10": null
       }
     ],
     "yields_spreads": {
       "US 10Y": {
-        "current": "4.41%",
-        "d2w": "+10 bp",
-        "dytd": "+23 bp"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "German Bund 10Y": {
-        "current": "2.91%",
-        "d2w": "+0 bp",
-        "dytd": "+9 bp"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "US 2s10s Spread": {
         "current": "0 bp",
