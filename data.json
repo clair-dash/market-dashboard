@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-28T22:02:28.879199Z",
+  "timestamp": "2026-05-28T23:40:44.393903Z",
   "demo": false,
   "equity": {
     "rebased": [
@@ -308,110 +308,110 @@
       },
       {
         "month": "May-26",
-        "EUR/CHF": 97.61,
-        "USD/CHF": 87.08,
-        "GBP/CHF": 92.92,
+        "EUR/CHF": 97.64,
+        "USD/CHF": 87.1,
+        "GBP/CHF": 92.95,
         "JPY/CHF": 81.67
       }
     ],
     "current": {
       "EUR/CHF": {
-        "price": 0.913,
-        "w1": -0.22,
-        "m1": -1.24,
-        "ytd": -1.89,
-        "y1": -2.7,
+        "price": 0.9133,
+        "w1": -0.03,
+        "m1": -1.14,
+        "ytd": -1.86,
+        "y1": -2.51,
         "pe": null
       },
       "USD/CHF": {
-        "price": 0.7836,
-        "w1": -0.42,
-        "m1": -0.68,
-        "ytd": -1.06,
-        "y1": -4.35,
+        "price": 0.7838,
+        "w1": -0.34,
+        "m1": -0.86,
+        "ytd": -1.04,
+        "y1": -4.56,
         "pe": null
       },
       "GBP/CHF": {
-        "price": 1.0536,
-        "w1": -0.34,
-        "m1": -1.23,
-        "ytd": -1.26,
-        "y1": -5.3,
+        "price": 1.0538,
+        "w1": -0.24,
+        "m1": -1.16,
+        "ytd": -1.24,
+        "y1": -5.21,
         "pe": null
       },
       "JPY/CHF": {
         "price": 0.0049,
-        "w1": -0.89,
-        "m1": -0.91,
+        "w1": -0.91,
+        "m1": -0.67,
         "ytd": -3.03,
-        "y1": -14.16,
+        "y1": -13.67,
         "pe": null
       }
     }
   },
   "commodities": {
     "Brent": {
-      "price": 92.48,
-      "w1": -11.94,
-      "m1": -16.88,
-      "ytd": 52.23,
-      "y1": 42.5,
+      "price": 92.45,
+      "w1": -11.97,
+      "m1": -16.91,
+      "ytd": 52.18,
+      "y1": 42.45,
       "pe": null
     },
     "Nat Gas": {
-      "price": 3.303,
-      "w1": 9.95,
-      "m1": 29.07,
-      "ytd": -8.71,
-      "y1": 3.09,
+      "price": 3.297,
+      "w1": 9.75,
+      "m1": 28.84,
+      "ytd": -8.87,
+      "y1": 2.9,
       "pe": null
     },
     "Copper": {
-      "price": 6.4245,
-      "w1": 2.13,
-      "m1": 8.62,
-      "ytd": 13.91,
-      "y1": 38.34,
+      "price": 6.4195,
+      "w1": 2.05,
+      "m1": 8.54,
+      "ytd": 13.82,
+      "y1": 38.23,
       "pe": null
     },
     "Gold": {
-      "price": 4527.2998,
-      "w1": -0.09,
-      "m1": -1.4,
-      "ytd": 4.93,
-      "y1": 37.46,
+      "price": 4521.8999,
+      "w1": -0.21,
+      "m1": -1.52,
+      "ytd": 4.81,
+      "y1": 37.29,
       "pe": null
     },
     "Bitcoin": {
-      "price": 73720.6406,
-      "w1": -3.85,
-      "m1": -7.86,
-      "ytd": -16.92,
-      "y1": -37.06,
+      "price": 73448.8828,
+      "w1": -4.21,
+      "m1": -8.2,
+      "ytd": -17.22,
+      "y1": -37.3,
       "pe": null
     },
     "Ethereum": {
-      "price": 2016.97,
-      "w1": -4.68,
-      "m1": -11.97,
-      "ytd": -32.78,
-      "y1": -56.06,
+      "price": 2004.75,
+      "w1": -5.26,
+      "m1": -12.5,
+      "ytd": -33.18,
+      "y1": -56.32,
       "pe": null
     }
   },
   "gold_chf_returns": {
-    "w1": -0.76,
-    "m1": -1.63,
-    "ytd": 3.8,
-    "y1": 30.18
+    "w1": -0.33,
+    "m1": -1.19,
+    "ytd": 4.26,
+    "y1": 30.75
   },
   "vix": 15.7,
   "dxy": {
-    "price": 99.0,
-    "w1": -0.11,
-    "m1": 0.39,
-    "ytd": 0.59,
-    "y1": -0.52
+    "price": 98.99,
+    "w1": -0.12,
+    "m1": 0.38,
+    "ytd": 0.58,
+    "y1": -0.53
   },
   "gold_miners": {
     "Agnico Eagle": {
@@ -470,7 +470,7 @@
     }
   },
   "real_yield": {
-    "value": 2.09
+    "value": null
   },
   "rates": {
     "policy": [
@@ -481,40 +481,40 @@
       },
       {
         "name": "Fed",
-        "policy": 3.75,
-        "yield10": 4.48
+        "policy": 4.5,
+        "yield10": null
       },
       {
         "name": "ECB",
         "policy": 2.75,
-        "yield10": 3.0
+        "yield10": null
       }
     ],
     "yields_spreads": {
       "US 10Y": {
-        "current": "4.48%",
-        "d2w": "-11 bp",
-        "dytd": "N/A"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "German Bund 10Y": {
-        "current": "3.00%",
-        "d2w": "+0 bp",
-        "dytd": "+18 bp"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "US 2s10s Spread": {
-        "current": "0 bp",
-        "d2w": "-0 bp",
-        "dytd": "N/A"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "US IG OAS": {
-        "current": "1 bp",
-        "d2w": "-0 bp",
-        "dytd": "N/A"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "US HY OAS": {
-        "current": "3 bp",
-        "d2w": "-0 bp",
-        "dytd": "N/A"
+        "current": null,
+        "d2w": null,
+        "dytd": null
       },
       "Swiss 10Y": {
         "current": "0.52%",
@@ -563,14 +563,14 @@
       "Japan"
     ],
     "latest": [
-      "3.9%",
+      null,
       "2.2%",
       "0.6%",
       "0.1%",
       "3.2%"
     ],
     "prior": [
-      "3.3%",
+      null,
       "2.4%",
       "0.8%",
       "0.3%",
