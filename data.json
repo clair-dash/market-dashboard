@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-01T21:26:43.108124Z",
+  "timestamp": "2026-09-01T23:31:15.973208Z",
   "demo": false,
   "equity": {
     "rebased": [
@@ -156,19 +156,19 @@
     ],
     "current": {
       "SMI": {
-        "price": 14334.79,
-        "w1": -0.78,
-        "m1": -0.08,
-        "ytd": 8.21,
-        "y1": 17.43,
+        "price": 14286.4297,
+        "w1": -1.18,
+        "m1": -0.74,
+        "ytd": 7.84,
+        "y1": 17.48,
         "pe": 25.7
       },
       "EuroStoxx 50": {
-        "price": 6368.98,
-        "w1": -1.23,
-        "m1": 0.17,
-        "ytd": 7.52,
-        "y1": 18.1,
+        "price": 6420.1602,
+        "w1": -0.65,
+        "m1": 1.19,
+        "ytd": 8.38,
+        "y1": 19.25,
         "pe": 18.8
       },
       "S&P 500": {
@@ -208,216 +208,216 @@
   "fx": {
     "rebased": [
       {
-        "month": "May-25",
+        "month": "Jun-25",
         "EUR/CHF": 100.0,
         "USD/CHF": 100.0,
         "GBP/CHF": 100.0,
         "JPY/CHF": 100.0
       },
       {
-        "month": "Jun-25",
-        "EUR/CHF": 100.27,
-        "USD/CHF": 97.09,
-        "GBP/CHF": 99.01,
-        "JPY/CHF": 96.49
-      },
-      {
         "month": "Jul-25",
-        "EUR/CHF": 99.55,
-        "USD/CHF": 98.91,
-        "GBP/CHF": 97.46,
-        "JPY/CHF": 94.74
+        "EUR/CHF": 99.28,
+        "USD/CHF": 101.87,
+        "GBP/CHF": 98.44,
+        "JPY/CHF": 98.18
       },
       {
         "month": "Aug-25",
-        "EUR/CHF": 100.19,
-        "USD/CHF": 98.95,
-        "GBP/CHF": 97.73,
-        "JPY/CHF": 94.74
+        "EUR/CHF": 99.93,
+        "USD/CHF": 101.92,
+        "GBP/CHF": 98.71,
+        "JPY/CHF": 98.18
       },
       {
         "month": "Sep-25",
-        "EUR/CHF": 100.19,
-        "USD/CHF": 96.96,
-        "GBP/CHF": 96.85,
-        "JPY/CHF": 94.74
+        "EUR/CHF": 99.93,
+        "USD/CHF": 99.86,
+        "GBP/CHF": 97.83,
+        "JPY/CHF": 98.18
       },
       {
         "month": "Oct-25",
-        "EUR/CHF": 99.36,
-        "USD/CHF": 97.49,
-        "GBP/CHF": 95.35,
-        "JPY/CHF": 91.23
+        "EUR/CHF": 99.09,
+        "USD/CHF": 100.41,
+        "GBP/CHF": 96.31,
+        "JPY/CHF": 94.55
       },
       {
         "month": "Nov-25",
-        "EUR/CHF": 99.87,
-        "USD/CHF": 97.62,
-        "GBP/CHF": 96.14,
-        "JPY/CHF": 89.47
+        "EUR/CHF": 99.6,
+        "USD/CHF": 100.54,
+        "GBP/CHF": 97.11,
+        "JPY/CHF": 92.73
       },
       {
         "month": "Dec-25",
-        "EUR/CHF": 99.63,
-        "USD/CHF": 96.29,
-        "GBP/CHF": 96.39,
-        "JPY/CHF": 89.47
+        "EUR/CHF": 99.36,
+        "USD/CHF": 99.17,
+        "GBP/CHF": 97.36,
+        "JPY/CHF": 92.73
       },
       {
         "month": "Jan-26",
-        "EUR/CHF": 98.2,
-        "USD/CHF": 93.94,
-        "GBP/CHF": 95.61,
-        "JPY/CHF": 87.72
+        "EUR/CHF": 97.94,
+        "USD/CHF": 96.76,
+        "GBP/CHF": 96.57,
+        "JPY/CHF": 90.91
       },
       {
         "month": "Feb-26",
-        "EUR/CHF": 97.75,
-        "USD/CHF": 94.04,
-        "GBP/CHF": 94.3,
-        "JPY/CHF": 87.72
+        "EUR/CHF": 97.49,
+        "USD/CHF": 96.86,
+        "GBP/CHF": 95.25,
+        "JPY/CHF": 90.91
       },
       {
         "month": "Mar-26",
-        "EUR/CHF": 98.16,
-        "USD/CHF": 97.29,
-        "GBP/CHF": 95.24,
-        "JPY/CHF": 87.72
+        "EUR/CHF": 97.9,
+        "USD/CHF": 100.2,
+        "GBP/CHF": 96.2,
+        "JPY/CHF": 90.91
       },
       {
         "month": "Apr-26",
-        "EUR/CHF": 98.95,
-        "USD/CHF": 96.16,
-        "GBP/CHF": 96.39,
-        "JPY/CHF": 85.96
+        "EUR/CHF": 98.69,
+        "USD/CHF": 99.04,
+        "GBP/CHF": 97.36,
+        "JPY/CHF": 89.09
       },
       {
         "month": "May-26",
-        "EUR/CHF": 97.6,
-        "USD/CHF": 94.98,
-        "GBP/CHF": 94.97,
-        "JPY/CHF": 85.96
+        "EUR/CHF": 97.34,
+        "USD/CHF": 97.82,
+        "GBP/CHF": 95.93,
+        "JPY/CHF": 89.09
       },
       {
         "month": "Jun-26",
-        "EUR/CHF": 98.8,
-        "USD/CHF": 98.22,
-        "GBP/CHF": 96.75,
-        "JPY/CHF": 87.72
+        "EUR/CHF": 98.54,
+        "USD/CHF": 101.16,
+        "GBP/CHF": 97.73,
+        "JPY/CHF": 90.91
       },
       {
         "month": "Jul-26",
-        "EUR/CHF": 99.48,
-        "USD/CHF": 98.01,
-        "GBP/CHF": 98.05,
-        "JPY/CHF": 87.72
+        "EUR/CHF": 99.21,
+        "USD/CHF": 100.94,
+        "GBP/CHF": 99.03,
+        "JPY/CHF": 90.91
       },
       {
         "month": "Aug-26",
-        "EUR/CHF": 100.32,
-        "USD/CHF": 97.76,
-        "GBP/CHF": 98.79,
-        "JPY/CHF": 87.72
+        "EUR/CHF": 100.05,
+        "USD/CHF": 100.69,
+        "GBP/CHF": 99.78,
+        "JPY/CHF": 90.91
+      },
+      {
+        "month": "Sep-26",
+        "EUR/CHF": 100.52,
+        "USD/CHF": 101.69,
+        "GBP/CHF": 100.17,
+        "JPY/CHF": 92.73
       }
     ],
     "current": {
       "EUR/CHF": {
-        "price": 0.9403,
-        "w1": 0.45,
-        "m1": 0.94,
-        "ytd": 1.04,
-        "y1": 0.76,
+        "price": 0.941,
+        "w1": 0.54,
+        "m1": 0.92,
+        "ytd": 1.12,
+        "y1": 0.68,
         "pe": null
       },
       "USD/CHF": {
-        "price": 0.8111,
-        "w1": 1.13,
-        "m1": 0.51,
-        "ytd": 2.41,
-        "y1": 1.73,
+        "price": 0.8118,
+        "w1": 1.26,
+        "m1": 0.18,
+        "ytd": 2.5,
+        "y1": 1.64,
         "pe": null
       },
       "GBP/CHF": {
-        "price": 1.0963,
-        "w1": 0.24,
-        "m1": 0.7,
-        "ytd": 2.74,
-        "y1": 1.72,
+        "price": 1.097,
+        "w1": 0.27,
+        "m1": 0.83,
+        "ytd": 2.81,
+        "y1": 1.49,
         "pe": null
       },
       "JPY/CHF": {
         "price": 0.0051,
-        "w1": 1.17,
-        "m1": -0.39,
+        "w1": 1.29,
+        "m1": -0.66,
         "ytd": 0.93,
-        "y1": -5.73,
+        "y1": -5.9,
         "pe": null
       }
     }
   },
   "commodities": {
     "Brent": {
-      "price": 95.22,
-      "w1": 7.5,
-      "m1": 13.67,
-      "ytd": 56.74,
-      "y1": 39.78,
+      "price": 95.26,
+      "w1": 7.54,
+      "m1": 13.72,
+      "ytd": 56.81,
+      "y1": 39.84,
       "pe": null
     },
     "Nat Gas": {
-      "price": 2.946,
-      "w1": 6.35,
-      "m1": 5.93,
-      "ytd": -18.57,
-      "y1": -1.7,
+      "price": 2.955,
+      "w1": 6.68,
+      "m1": 6.26,
+      "ytd": -18.33,
+      "y1": -1.4,
       "pe": null
     },
     "Copper": {
-      "price": 6.534,
-      "w1": -2.62,
-      "m1": 0.31,
-      "ytd": 15.85,
-      "y1": 44.61,
+      "price": 6.5355,
+      "w1": -2.59,
+      "m1": 0.33,
+      "ytd": 15.88,
+      "y1": 44.64,
       "pe": null
     },
     "Gold": {
-      "price": 4375.7002,
+      "price": 4375.3999,
       "w1": -5.66,
-      "m1": 8.48,
-      "ytd": 1.42,
-      "y1": 25.97,
+      "m1": 8.47,
+      "ytd": 1.41,
+      "y1": 25.96,
       "pe": null
     },
     "Bitcoin": {
-      "price": 77189.5,
-      "w1": -3.82,
-      "m1": 21.46,
-      "ytd": -13.01,
-      "y1": -11.7,
+      "price": 77356.5,
+      "w1": -3.61,
+      "m1": 21.72,
+      "ytd": -12.82,
+      "y1": -11.51,
       "pe": null
     },
     "Ethereum": {
-      "price": 2414.6499,
-      "w1": -3.81,
-      "m1": 28.35,
-      "ytd": -19.52,
-      "y1": -18.52,
+      "price": 2415.9399,
+      "w1": -3.76,
+      "m1": 28.41,
+      "ytd": -19.48,
+      "y1": -18.47,
       "pe": null
     }
   },
   "gold_chf_returns": {
-    "w1": -4.56,
-    "m1": 9.06,
-    "ytd": 3.89,
-    "y1": 27.5
+    "w1": -4.93,
+    "m1": 8.63,
+    "ytd": 3.48,
+    "y1": 27.0
   },
   "vix": 16.3,
   "dxy": {
-    "price": 99.67,
-    "w1": 0.68,
-    "m1": -0.13,
-    "ytd": 1.27,
-    "y1": 1.9
+    "price": 99.65,
+    "w1": 0.66,
+    "m1": -0.15,
+    "ytd": 1.25,
+    "y1": 1.89
   },
   "gold_miners": {
     "Agnico Eagle": {
